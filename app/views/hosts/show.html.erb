@@ -22,7 +22,7 @@
   <% @host.packages.each do |p| %>
     <tr>
       <td><%= p.name %></td>
-      <td><%= p.installations.version.name %></td>
+      <td><%= p.versions.to_s%></td>
       <td><%= p.installations.installed_on %></td> 
     </tr>
   <% end %>
