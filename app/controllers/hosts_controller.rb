@@ -13,7 +13,7 @@ class HostsController < ApplicationController
   # GET /hosts/1
   # GET /hosts/1.xml
   def show
-    @host = Host.find(params[:id], :include => [{:packages => :installations}])
+    @host = Host.find(params[:id], :include => [{:packages => {:installations => :version}}])
 
     respond_to do |format|
       format.html # show.html.erb
