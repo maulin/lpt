@@ -1,8 +1,33 @@
 <p id="notice"><%= notice %></p>
 
+<h2>Host Information</h2>
+
 <p>
-  <b>Name:</b>
+  <b>Host Name:</b>
   <%= @host.name %>
+  <b>Running Kernel:</b>
+  <%= @host.running_kernel %>
+</p>
+
+<h3>Packages installed on this host</h3>
+
+<p>
+  <table>
+    <tr>
+      <th>Name</th>
+      <th>Version</th>
+      <th>Install Date</th>
+     </tr>
+
+  <% @host.packages.each do |p| %>
+    <tr>
+      <td><%= p.name %></td>
+      <td><%= p.name %></td>
+      <td><%= p.installations.installed_on %></td> 
+    </tr>
+  <% end %>
+</table>
+
 </p>
 
 <%= link_to 'Edit', edit_host_path(@host) %> |
