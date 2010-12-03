@@ -15,8 +15,9 @@ class Host < ActiveRecord::Base
     name
   end
 
-  def to_param
-    name
-  end
+  #TODO Fix this so the ID doesnt appear in the URL
+  #def to_param
+  #  "#{id}-#{name}"
+  #end
 
 end

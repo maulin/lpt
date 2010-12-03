@@ -19,11 +19,11 @@
       <th>Install Date</th>
      </tr>
 
-  <% @host.packages.each do |p| %>
+  <% @host.installations.each do |i| %>
     <tr>
-      <td><%= p.name %></td>
-      <td><%= p.versions.to_s%></td>
-      <td><%= p.installations.installed_on %></td> 
+      <td><%= i.package.to_s %></td>
+      <td><%= i.version.to_s%></td>
+      <td><%= i.installed_on %></td> 
     </tr>
   <% end %>
 </table>

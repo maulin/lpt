@@ -8,7 +8,7 @@
 
 <% @hosts.each do |host| %>
   <tr>
-    <td><%= host.name %></td>
+    <td><%= link_to host.name, host %></td>
     <td><%= host.running_kernel %></td>
   </tr>
 <% end %>
