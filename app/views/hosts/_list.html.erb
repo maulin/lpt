@@ -1,0 +1,23 @@
+<% if hosts.size > 0 -%>
+  <%= form_for @search do |f| %>
+    <%= f.label :name_contains %>
+    <%= f.text_field :name_contains %><br />
+    <%= f.submit %>
+  <% end -%>
+  <% title header ||= "" %>
+  <table class="list">
+    <tr>
+      <th><%= sort_link @search, :name %></th>
+      <th><%= sort_link @search, :arch_name, :as => "Arch" %></th>
+      <th><%= sort_link @search, :os_name, :as => "OS" %></th>
+      <th></th>
+    </tr>
+    <% hosts.each do |host| -%>
+      <tr class="<%= cycle("even", "odd") -%>">
+        <td><%=h link_to host.name, host %></td>
+        <td><%=h host.try(:arch) %></td>
+        <td><%=h host.try(:os) %></td>
+      </tr>
+    <% end -%>
+  </table>
+<% end -%>

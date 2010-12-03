@@ -3,6 +3,7 @@ source 'http://rubygems.org'
 gem 'rails', '3.0.1'
 gem 'mysql', '2.8.1'
 gem 'wirble'
+gem 'hirb'
 gem 'awesome_print'
 gem 'net-ssh', '2.0.23'
 gem 'net-ssh-multi', '1.0.1'
@@ -11,6 +12,7 @@ gem 'rails-erd'
 gem 'resque'
 #gem 'resque-scheduler'
 gem 'SystemTimer'
+gem 'meta_search'
 
 
 # Bundle edge Rails instead:

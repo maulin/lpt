@@ -41,6 +41,6 @@ class ScanHosts
       puts "Fatal: Could not ssh as #{user} to #{hostname}."
       exit 1
     end
-    Installation.import(pkgs,hostname,os,running_kernel)
+    Installation.import(pkgs,hostname,os,arch,running_kernel)
   end #end perform
 end

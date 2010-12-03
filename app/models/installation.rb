@@ -6,9 +6,10 @@ class Installation < ActiveRecord::Base
   belongs_to :os
   belongs_to :arch
 
-  def self.import(pkgs, host, os, running_kernel)
+  def self.import(pkgs, host, os, arch, running_kernel)
     os = Os.find_or_create_by_name(os)
     host = Host.find_by_name(host)
+    host.update_attributes(:running_kernel => running_kernel.chomp.strip)
     pkgs = pkgs.split("==SPLIT==")
     new_pkgs = []
     puts "#{host.id} #{os.id} #{pkgs[0]}"

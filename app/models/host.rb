@@ -9,14 +9,15 @@ class Host < ActiveRecord::Base
   #database to remove duplicates using the DISTINCT keyword :select => "DISTINCT packages.*"
 
   has_one :os, :through => :installations
+  has_one :arch, :through => :installations
   validates_uniqueness_of :name
 
   def to_s
     name
   end
 
-  def to_param
-    name
-  end
+  #def to_param
+  #  name
+  #end
 
 end

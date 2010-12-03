@@ -1,13 +1,11 @@
 class HostsController < ApplicationController
+  respond_to :html,:json,:yaml
   # GET /hosts
   # GET /hosts.xml
   def index
-    @hosts = Host.all
-
-    respond_to do |format|
-      format.html # index.html.erb
-      format.xml  { render :xml => @hosts }
-    end
+    @search = Host.search(params[:search])
+    @hosts = @search.all
+    respond_with(@hosts)
   end
 
   # GET /hosts/1
@@ -17,7 +15,7 @@ class HostsController < ApplicationController
 
     respond_to do |format|
       format.html # show.html.erb
-      format.xml  { render :xml => @host }
+      format.json  { render :json => @host }
     end
   end
 

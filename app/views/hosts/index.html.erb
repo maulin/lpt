@@ -1,20 +1,6 @@
-<h1>Listing hosts</h1>
-
-<table>
-  <tr>
-    <th>Name</th>
-    <th>Running Kernel</th>
-  </tr>
-
-<% @hosts.each do |host| %>
-  <tr>
-    <td><%= host.name %></td>
-    <td><%= host.running_kernel %></td>
-  </tr>
-<% end %>
-</table>
-
-<br />
-
-<%= link_to 'New Host', new_host_path %>
-<%= link_to 'Scan Host', scan_hosts_path %>
+<% title "Hosts List" %>
+<span class="top">
+  <%= link_to 'New Host', new_host_path %>
+  <%= link_to 'Scan Host', scan_hosts_path %>
+</span>
+<%= render 'list', :hosts => @hosts, :header => "Hosts"  %>

@@ -1,3 +1,4 @@
+<% title @host.name %>
 <p id="notice"><%= notice %></p>
 
 <h2>Host Information</h2>
@@ -23,7 +24,7 @@
     <tr>
       <td><%= p.name %></td>
       <td><%= p.versions.to_s%></td>
-      <td><%= p.installations.installed_on %></td> 
+      <td>""</td>
     </tr>
   <% end %>
 </table>
