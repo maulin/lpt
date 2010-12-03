@@ -11,7 +11,7 @@ class HostsController < ApplicationController
   # GET /hosts/1
   # GET /hosts/1.xml
   def show
-    @host = Host.find(params[:id], :include => [{:packages => {:installations => :version}}])
+    @host = Host.find(params[:id], :include => [{:installations => {:package => :versions}}])
 
     respond_to do |format|
       format.html # show.html.erb
@@ -31,6 +31,7 @@ class HostsController < ApplicationController
     @host = Host.new(params[:host])
     respond_to do |format|
       if @host.save
+        logger.info "ID = #{@host.id}"
         format.html { redirect_to(@host,
                       :notice => 'Host was successfully created.') }
         format.xml  { render :xml => @host,
@@ -75,12 +76,7 @@ class HostsController < ApplicationController
   end
 
   def scan
-
-    @host = Host.find_by_name("192.168.1.123")
-    #Delayed::Job.enqueue ScanHosts.new(@hosts.first,"test","1q2w3e")
-    user = "test"
-    pass = "1q2w3e"
+    @host = Host.find_by_name("fedora")
     Resque.enqueue(ScanHosts, @host.name)
-
   end
 end

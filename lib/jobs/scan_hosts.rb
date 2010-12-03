@@ -2,11 +2,6 @@ require 'rubygems'
 require 'net/ssh'
 
 class ScanHosts
-  #def initialize(hostname,user,password)
-  #  @hostname = hostname
-  #  @user = user
-  #  @password = password
-  #end
 
   @queue = :ssh_host
 
@@ -20,10 +15,6 @@ class ScanHosts
     
     begin
       Net::SSH.start(hostname, user, :password => password) do |ssh| 
-        stdout = ""
-        ssh.exec!("hostname") do |channel, stream, data|
-          stdout << data
-        end
         ssh.exec!("rpm -qa --qf  \"%{name}===%{version}===%{release}===%{arch}===%{INSTALLTIME:date}==SPLIT==\"") do |channel, stream, data|
           pkgs << data
         end
@@ -38,7 +29,7 @@ class ScanHosts
         end
       end 
     rescue Net::SSH::Exception => e
-      puts "Fatal: Could not ssh as #{user} to #{hostname}."
+      Rails.logger.info "Fatal: Could not ssh as #{user} to #{hostname}."
       exit 1
     end
     Installation.import(pkgs,hostname,os,arch,running_kernel)

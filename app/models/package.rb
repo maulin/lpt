@@ -12,7 +12,7 @@ class Package < ActiveRecord::Base
   end
 
   def to_param
-    name
+    "#{id}-#{name}"
   end
 
 end
