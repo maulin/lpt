@@ -87,6 +87,7 @@ class HostsController < ApplicationController
         Resque.enqueue(ScanHosts, h.name)
       end
       flash[:notice] = "#{pluralize(host.size, 'host is', 'hosts are')} being scanned for packages. Please visit the hosts page to view them"
+      redirect_to host_path
     end
 
   end
