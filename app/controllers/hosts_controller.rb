@@ -29,14 +29,10 @@ class HostsController < ApplicationController
 
   def create
     @host = Host.new(params[:host])
-    respond_to do |format|
-      if @host.save
-        scan(@host)
-      else
-        format.html { render :action => "new" }
-        format.xml  { render :xml => @host.errors,
-                      :status => :unprocessable_entity }
-      end
+    if @host.save
+      scan(@host)
+    else
+      render :action => "new"
     end
   end
 
@@ -84,6 +80,6 @@ class HostsController < ApplicationController
       flash[:notice] = "#{host.size} Hosts are being scanned for packages. Please visit the hosts page to view them"
       redirect_to hosts_path
     end
-
   end
+  
 end
