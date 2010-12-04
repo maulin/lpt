@@ -13,7 +13,7 @@
   </tr>
   <% @package.installations.group(:version).each do |inst| -%>
     <tr class="<%= cycle("even", "odd") -%>">
-      <td><%= "#{inst.version}" %> </td>
+      <td><%= link_to "#{inst.version}", package_installation_path(inst.package_id, inst, :version => inst.version)%> </td>
       <td><%= "#{inst.arch}" %> </td>
       <td><%= "#{inst.os}" %> </td>
     </tr>

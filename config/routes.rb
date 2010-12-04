@@ -58,9 +58,12 @@ Lpt::Application.routes.draw do
     collection do
       get 'scan'
     end
+    resources :installations
   end
 
-  resources :packages
+  resources :packages do
+    resources :installations
+  end
 
   # See how all your routes lay out with "rake routes"
 

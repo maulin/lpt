@@ -1,0 +1,28 @@
+<h3>Installation Information</h3>
+<p>
+  <b>Package Name:</b>
+  <%= @package.name %><br />
+  <b>Version:</b>
+  <%= @version %><br />
+</p>
+
+<h3>Listing hosts with this package installed</h3>
+
+<p>
+  <table class="list">
+    <tr>
+      <th>Name</th>
+      <th>Package Installed On</th>
+     </tr>
+
+  <% @hosts.each do |h| %>
+    <tr class="<%= cycle("even", "odd") -%>">
+      <td><%= h.name %></td>
+      <td><%= h.installed_on %></td> 
+    </tr>
+  <% end %>
+</table>
+
+</p>
+
+<%= link_to 'Back', :back %>
