@@ -22,12 +22,12 @@ class Installation < ActiveRecord::Base
       #                          :versions => {:value => version}, 
       #                          :releases => {:value => release}, 
       #                          :arches => {:name => arch}})
-      unless install=Installation.joins(:package, :version, :release, :arch).where(:host_id => 2,
-                                                                            :os_id => 1,
-                                                                            :packages => {:name => "libdmapsharing"},
-                                                                            :versions => {:value => "1.9.0.21"},
-                                                                            :releases => {:value => "1.fc14"},
-                                                                            :arches => {:name => "i686"} ).first
+      unless install=Installation.joins(:package, :version, :release, :arch).where(:host_id => host.id,
+                                                                            :os_id => os.id,
+                                                                            :packages => {:name => pkg},
+                                                                            :versions => {:value => version},
+                                                                            :releases => {:value => release},
+                                                                            :arches => {:name => arch} ).first
         new_pkgs += pkg.to_a
         p_id = Package.find_or_create_by_name(pkg).id
         v_id = Version.find_or_create_by_value(version).id

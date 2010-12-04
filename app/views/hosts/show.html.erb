@@ -12,8 +12,11 @@
 
 <h3>Packages installed on this host</h3>
 
+<%= link_to 'Edit', edit_host_path(@host) %> |
+<%= link_to 'Back', hosts_path %>
+
 <p>
-  <table>
+  <table class="list">
     <tr>
       <th>Name</th>
       <th>Version</th>
@@ -21,7 +24,7 @@
      </tr>
 
   <% @host.installations.each do |i| %>
-    <tr>
+    <tr class="<%= cycle("even", "odd") -%>">
       <td><%= i.package.to_s %></td>
       <td><%= i.version.to_s%></td>
       <td><%= i.installed_on %></td> 
