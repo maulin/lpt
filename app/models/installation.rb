@@ -12,7 +12,8 @@ class Installation < ActiveRecord::Base
     new_pkgs = []
     all_pkgs_ids = []
     pkgs.each do |pkg|
-      pkg, version, arch, installed_on = pkg.split("===").map{|s| s.chomp.strip}
+      pkg, version, release, arch, installed_on = pkg.split("===").map{|s| s.chomp.strip}
+      version = "#{version}-#{release}"
       #unless install=Installation.first(:joins => [:package, :version, :release, :arch],
       #          :conditions => {:host_id => host.id, 
       #                          :os_id => os.id, 

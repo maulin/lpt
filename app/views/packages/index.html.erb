@@ -1,0 +1,18 @@
+<% title "Packages" %>
+<%= form_for @search do |f| %>
+  <%= f.label :name_contains %>
+  <%= f.text_field :name_contains %><br />
+  <%= f.submit %>
+<% end -%>
+<table class="list">
+  <tr>
+    <th>Package Name</th>
+    <th>Number of hosts<th>
+  </tr>
+  <% for package in @packages %>
+    <tr class="<%= cycle("even", "odd") -%>">
+      <td><%= link_to package.name, package %></td>
+      <td><%= @counter[package.id.to_s] %></td>
+    </tr>
+  <% end %>
+</table>
