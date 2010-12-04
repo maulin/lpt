@@ -19,19 +19,19 @@ class ScanHosts
           pkgs << data
         end
         ssh.exec!("uname -m") do |channel, stream, data|
-          arch << data
+          host_arch << data
         end
         ssh.exec!("uname -r") do |channel, stream, data|
           running_kernel << data
         end
         ssh.exec!("test -f /etc/redhat-release && cat /etc/redhat-release") do |channel, stream, data|
-          os << data
+          host_os << data
         end
       end 
     rescue Net::SSH::Exception => e
       Rails.logger.info "Fatal: Could not ssh as #{user} to #{hostname}."
       exit 1
     end
-    Installation.import(pkgs,hostname,os,arch,running_kernel)
+    Installation.import(pkgs,hostname,host_os,host_arch,running_kernel)
   end #end perform
 end
