@@ -31,9 +31,10 @@ class HostsController < ApplicationController
     @host = Host.new(params[:host])
     respond_to do |format|
       if @host.save
-        logger.info "ID = #{@host.id}"
+
+        scan(@host)
         format.html { redirect_to(@host,
-                      :notice => 'Host was successfully created.') }
+                      :notice => 'Host was successfully created. Packages on this host are now being scanned.') }
         format.xml  { render :xml => @host,
                       :status => :created, :location => @host }
       else
@@ -75,8 +76,18 @@ class HostsController < ApplicationController
     redirect_to hosts_url
   end
 
-  def scan
-    @host = Host.find_by_name("fedora")
-    Resque.enqueue(ScanHosts, @host.name)
+  def scan(*host)
+    if host.empty?
+      host = Host.find(params[:id])
+      Resque.enqueue(ScanHosts, host.name)
+      flash[:notice] = "#{host.name} is being scanned for packages. Please refresh the page to view them."
+      redirect_to host_path(host)
+    else
+      host.each do |h|
+        Resque.enqueue(ScanHosts, h.name)
+      end
+      flash[:notice] = "#{pluralize(host.size, 'host is', 'hosts are')} being scanned for packages. Please visit the hosts page to view them"
+    end
+
   end
 end

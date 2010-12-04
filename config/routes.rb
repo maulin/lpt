@@ -53,6 +53,8 @@ Lpt::Application.routes.draw do
   root :to => 'hosts#index', :as => 'hosts'
   
   resources :hosts do
+    #this way we can scan a collection of hosts as well as a single host
+    get 'scan', :on => :member 
     collection do
       get 'scan'
     end

@@ -1,13 +1,13 @@
 <% title @host.name %>
-<p id="notice"><%= notice %></p>
 
-<h2>Host Information</h2>
+<h3>Host Information</h3>
 
 <p>
   <b>Host Name:</b>
-  <%= @host.name %>
+  <%= @host.name %><br />
   <b>Running Kernel:</b>
-  <%= @host.running_kernel %>
+  <%= @host.running_kernel %><br />
+  <%= link_to 'Scan Host for Packages', scan_host_path(@host) %>
 </p>
 
 <h3>Packages installed on this host</h3>
