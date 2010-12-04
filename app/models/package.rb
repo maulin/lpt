@@ -8,8 +8,9 @@ class Package < ActiveRecord::Base
     name
   end
 
-  def to_param
-    "#{id}-#{name}"
-  end
+  # TODO
+  #def to_param
+  #  "#{id}-#{name}"
+  #end
 
 end

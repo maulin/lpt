@@ -15,7 +15,7 @@ class ScanHosts
     
     begin
       Net::SSH.start(hostname, user, :password => password) do |ssh| 
-        ssh.exec!("rpm -qa --qf  \"%{name}===%{version}-%{release}===%{arch}===%{INSTALLTIME:date}==SPLIT==\"") do |channel, stream, data|
+        ssh.exec!("rpm -qa --qf  \"%{name}===%{version}===%{release}===%{arch}===%{INSTALLTIME:date}==SPLIT==\"") do |channel, stream, data|
           pkgs << data
         end
         ssh.exec!("uname -m") do |channel, stream, data|
@@ -28,7 +28,6 @@ class ScanHosts
           host_os << data
         end
       end 
-    Rails.logger.info "Trying to add #{pkgs} for #{hostname}"
     rescue Net::SSH::Exception => e
       Rails.logger.info "Fatal: Could not ssh as #{user} to #{hostname}."
       exit 1

@@ -1,0 +1,25 @@
+<% title "Package" %>
+
+<p>
+  <strong>Package Name:</strong>
+  <%=h @package.name %>
+</p>
+<table class="list">
+  <tr>
+    <th>Version(s)</th>
+    <th>Arch</th>
+    <th>OS</th>
+    <th>Hosts</th>
+  </tr>
+  <% @package.installations.group(:version).each do |inst| -%>
+    <tr class="<%= cycle("even", "odd") -%>">
+      <td><%= "#{inst.version}" %> </td>
+      <td><%= "#{inst.arch}" %> </td>
+      <td><%= "#{inst.os}" %> </td>
+    </tr>
+  <% end -%>
+</table>
+
+<p>
+  <%= link_to "View All Packages", packages_path %>
+</p>
