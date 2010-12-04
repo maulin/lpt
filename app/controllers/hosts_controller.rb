@@ -11,7 +11,7 @@ class HostsController < ApplicationController
   # GET /hosts/1
   # GET /hosts/1.xml
   def show
-    @host = Host.find(params[:id], :include => [{:installations => {:package => :versions}}])
+    @host = Host.find(params[:id], :include => [{:installations => :package}])
 
     respond_to do |format|
       format.html # show.html.erb
@@ -31,12 +31,7 @@ class HostsController < ApplicationController
     @host = Host.new(params[:host])
     respond_to do |format|
       if @host.save
-
         scan(@host)
-        format.html { redirect_to(@host,
-                      :notice => 'Host was successfully created. Packages on this host are now being scanned.') }
-        format.xml  { render :xml => @host,
-                      :status => :created, :location => @host }
       else
         format.html { render :action => "new" }
         format.xml  { render :xml => @host.errors,
@@ -80,14 +75,14 @@ class HostsController < ApplicationController
     if host.empty?
       host = Host.find(params[:id])
       Resque.enqueue(ScanHosts, host.name)
-      flash[:notice] = "#{host.name} is being scanned for packages. Please refresh the page to view them."
-      redirect_to host_path(host)
+      format.html { redirect_to(@host,
+                      :notice => "#{host.name} is being scanned for packages. Please refresh the page to view them.") }
     else
       host.each do |h|
         Resque.enqueue(ScanHosts, h.name)
       end
-      flash[:notice] = "#{pluralize(host.size, 'host is', 'hosts are')} being scanned for packages. Please visit the hosts page to view them"
-      redirect_to host_path
+      flash[:notice] = "#{host.size} Hosts are being scanned for packages. Please visit the hosts page to view them"
+      redirect_to hosts_path
     end
 
   end

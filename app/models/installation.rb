@@ -6,7 +6,7 @@ class Installation < ActiveRecord::Base
 #    os = Os.find_or_create_by_name(os)
     host = Host.find_by_name(host)
     host.update_attributes(:running_kernel => running_kernel.chomp.strip, 
-                           :arch => host_arch.chomp.strip
+                           :arch => host_arch.chomp.strip,
                            :os => host_os.chomp.strip)
     pkgs = pkgs.split("==SPLIT==")
     new_pkgs = []
@@ -21,12 +21,12 @@ class Installation < ActiveRecord::Base
       #                          :releases => {:value => release}, 
       #                          :arches => {:name => arch}})
       p_id = Package.find_or_create_by_name(pkg).id
-      all_pkgs_ids += p_id
-      unless install=Installation.joins(:package, :version, :release, :arch).where(:host_id => host.id,
+#      all_pkgs_ids += p_id
+      unless install=Installation.joins(:package).where(:host_id => host.id,
                                                                             :package_id => p_id,
-                                                                            :os_id => host_os,
+                                                                            :os => host_os,
                                                                             :version => version,
-                                                                            :arches => arch).first
+                                                                            :arch => arch).first
         new_pkgs += pkg.to_a
 
         t = Time.parse(installed_on)
@@ -34,7 +34,7 @@ class Installation < ActiveRecord::Base
                            :package_id => p_id, 
                            :version => version,
                            :arch => arch, 
-                           :os => os,
+                           :os => host_os,
                            :installed_on => t)
       end # end unless Installation
     end # end pkgs.each do
