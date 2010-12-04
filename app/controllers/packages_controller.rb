@@ -7,7 +7,19 @@ class PackagesController < ApplicationController
 
   def show
     @package = Package.find(params[:id])
-    @counter = @package.installations.size
+    @installs = Installation.where(:package_id => @package.id).group(
+                                                              :id,
+                                                              :package_id, 
+                                                              :version, 
+                                                              :os, 
+                                                              :arch).select(
+                                                                    'id,
+                                                                    package_id, 
+                                                                    version, os, 
+                                                                    arch, 
+                                                                    count(*) as host_count')
+#    @package = Package.find(params[:id])
+#    @counter = @package.installations.size
   end
 
   def new

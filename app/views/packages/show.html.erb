@@ -11,11 +11,13 @@
     <th>OS</th>
     <th>Hosts</th>
   </tr>
-  <% @package.installations.group(:version).each do |inst| -%>
+  <%-# @package.installations.group(:version).each do |inst| -%>
+  <% @installs.each do |inst| -%>
     <tr class="<%= cycle("even", "odd") -%>">
-      <td><%= link_to "#{inst.version}", package_installation_path(inst.package_id, inst, :version => inst.version)%> </td>
+      <td><%= link_to inst.version, package_installation_path(inst.package_id, inst, :version => inst.version) %></td>
       <td><%= "#{inst.arch}" %> </td>
       <td><%= "#{inst.os}" %> </td>
+      <td><%= "#{inst.host_count}" %> </td>
     </tr>
   <% end -%>
 </table>
