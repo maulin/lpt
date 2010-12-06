@@ -1,7 +1,7 @@
 class Installation < ActiveRecord::Base
   belongs_to :host
   belongs_to :package
-
+  
   def self.import(pkgs, host, host_os, host_arch, running_kernel)
 #    os = Os.find_or_create_by_name(os)
     host = Host.find_by_name(host)
@@ -40,4 +40,5 @@ class Installation < ActiveRecord::Base
       end # end unless Installation
     end # end pkgs.each do
   end # end self.import
+  
 end

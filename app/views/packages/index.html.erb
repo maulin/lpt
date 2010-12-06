@@ -9,10 +9,10 @@
     <th>Package Name</th>
     <th>Number of hosts<th>
   </tr>
-  <% for package in @packages %>
+  <% @packages.each do |p| %>
     <tr class="<%= cycle("even", "odd") -%>">
-      <td><%= link_to package.name, package %></td>
-      <td><%= @counter[package.id.to_s] %></td>
+      <td><%= link_to p.name, p %></td>
+      <td><%= p.host_count %></td>
     </tr>
   <% end %>
 </table>

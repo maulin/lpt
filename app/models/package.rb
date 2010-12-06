@@ -12,5 +12,13 @@ class Package < ActiveRecord::Base
   #def to_param
   #  "#{id}-#{name}"
   #end
+  
+  def self.find_uniq_hosts_installed_on
+    Package.find_by_sql('select id, name, count(*) host_count 
+            from packages, 
+            (SELECT distinct package_id, host_id FROM installations) as x 
+            where id = x.package_id 
+            group by name')
+  end
 
 end
