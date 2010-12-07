@@ -1,9 +1,12 @@
 class PackagesController < ApplicationController
   def index
-    @search = Package.search(params[:search])
+    @search = Package.pkg_hosts.search(params[:search])
+    @packages = @search.all
+#    @search = Package.search(params[:search])
 #    @packages = @search.all
 #    @counter = Package.count(:conditions => {:id => @packages.map(&:id)}, :group => :package_id, :joins => :installations)
-     @packages = Package.find_uniq_hosts_installed_on
+     
+     
   end
 
   def show
