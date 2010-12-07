@@ -8,8 +8,8 @@
 
 <table class="list">
   <tr>
-    <th>Package Name</th>
-    <th>Number of hosts<th>
+    <th><%= sort_link @search, :name, "Package Name" %></th>
+    <th>Number of Hosts<th>
   </tr>
   <% @packages.each do |p| %>
     <tr class="<%= cycle("even", "odd") -%>">

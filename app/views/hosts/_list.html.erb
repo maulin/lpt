@@ -8,8 +8,8 @@
   <table class="list">
     <tr>
       <th><%= sort_link @search, :name %></th>
-      <th>Arch <%= sort_link @search, :name, :class => "arch_name_sort" %></th>
-      <th>Os <%= sort_link @search, :name, :class => "os_name_sort" %></th>
+      <th><%= sort_link @search, :arch, :class => "arch_name_sort" %></th>
+      <th><%= sort_link @search, :os, :class => "os_name_sort" %></th>
       <th></th>
     </tr>
     <% hosts.each do |host| -%>
