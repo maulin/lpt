@@ -3,7 +3,7 @@ class HostsController < ApplicationController
   # GET /hosts
   # GET /hosts.xml
   def index
-    @search = Host.search(params[:search])
+    @search = Host.includes(:arch, :os).search(params[:search])
     @hosts = @search.all
     respond_with(@hosts)
   end
@@ -11,7 +11,9 @@ class HostsController < ApplicationController
   # GET /hosts/1
   # GET /hosts/1.xml
   def show
-    @host = Host.find(params[:id], :include => [{:installations => :package}])
+    @search = Host.where(:id => params[:id]).includes(:installations => [:package, :version, :arch]).search(params[:search])
+    @host = @search.first
+    #@host = Host.where(:id => params[:id]).joins(:packages).includes(:installation)
 
     respond_to do |format|
       format.html # show.html.erb
@@ -71,8 +73,8 @@ class HostsController < ApplicationController
     if host.empty?
       host = Host.find(params[:id])
       Resque.enqueue(ScanHosts, host.name)
-      format.html { redirect_to(@host,
-                      :notice => "#{host.name} is being scanned for packages. Please refresh the page to view them.") }
+      flash[:notice] = "#{host.name} is being scanned for packages. Please refresh the page to view them."
+      redirect_to host 
     else
       host.each do |h|
         Resque.enqueue(ScanHosts, h.name)

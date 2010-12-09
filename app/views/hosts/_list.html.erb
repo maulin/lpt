@@ -8,15 +8,15 @@
   <table class="list">
     <tr>
       <th><%= sort_link @search, :name %></th>
-      <th><%= sort_link @search, :arch, :class => "arch_name_sort" %></th>
-      <th><%= sort_link @search, :os, :class => "os_name_sort" %></th>
+      <th><%= sort_link @search, :arch_name, "Arch", :class => "arch" %></th>
+      <th><%= sort_link @search, :os_name, "Os", :class => "os" %></th>
       <th></th>
     </tr>
     <% hosts.each do |host| -%>
       <tr class="<%= cycle("even", "odd") -%>">
         <td><%=h link_to host.name, host %></td>
-        <td><%=h host.try(:arch) %></td>
-        <td><%=h host.try(:os) %></td>
+        <td><%=h host.arch %></td>
+        <td><%=h host.os %></td>
       </tr>
     <% end -%>
   </table>

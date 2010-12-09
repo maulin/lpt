@@ -50,8 +50,7 @@ Lpt::Application.routes.draw do
 
   # You can have the root of your site routed with "root"
   # just remember to delete public/index.html.
-  root :to => 'hosts#index', :as => 'hosts'
-  
+    
   resources :hosts do
     #this way we can scan a collection of hosts as well as a single host
     get 'scan', :on => :member 
@@ -59,11 +58,16 @@ Lpt::Application.routes.draw do
       get 'scan'
     end
     resources :installations
+    resource :os
+    resource :arch
   end
 
   resources :packages do
     resources :installations
+    resources :versions
+    resources :arches
   end
+  root :to => 'hosts#index', :as => '/'
 
   # See how all your routes lay out with "rake routes"
 

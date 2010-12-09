@@ -6,18 +6,13 @@
 </p>
 <table class="list">
   <tr>
-    <th>Version(s)</th>
-    <th>Arch</th>
-    <th>OS</th>
+    <th>Version</th>
     <th>Hosts</th>
   </tr>
-  <%-# @package.installations.group(:version).each do |inst| -%>
-  <% @installs.each do |inst| -%>
+  <% @installs.each do |i| -%>
     <tr class="<%= cycle("even", "odd") -%>">
-      <td><%= link_to inst.version, package_installation_path(inst.package_id, inst, :version => inst.version) %></td>
-      <td><%= "#{inst.arch}" %> </td>
-      <td><%= "#{inst.os}" %> </td>
-      <td><%= "#{inst.host_count}" %> </td>
+      <td><%= "#{i.name}" %></td>
+      <td><%= "#{i.host_count}" %> </td>
     </tr>
   <% end -%>
 </table>

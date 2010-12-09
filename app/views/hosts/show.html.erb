@@ -18,16 +18,18 @@
 <p>
   <table class="list">
     <tr>
-      <th>Name</th>
+      <th><%= sort_link @search, :packages_name, "Package", :class => "package" %></th>
       <th>Version</th>
+      <th>Arch</th>
       <th>Install Date</th>
      </tr>
 
   <% @host.installations.each do |i| %>
     <tr class="<%= cycle("even", "odd") -%>">
-      <td><%= link_to i.package.name, package_path(i.package_id) %></td>
-      <td><%= i.version.to_s%></td>
-      <td><%= i.installed_on %></td> 
+      <td><%= link_to i.package, package_path(i.package) %></td>
+      <td><%= i.version %></td>
+      <td><%= i.arch %></td>
+      <td><%= i.installed_on %></td>  
     </tr>
   <% end %>
 </table>
