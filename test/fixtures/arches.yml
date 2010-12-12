@@ -1,7 +1,7 @@
 # Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
 
-one:
-  name: MyString
+i686:
+  name: i686
 
-two:
-  name: MyString
+x64:
+  name: x64

@@ -13,6 +13,7 @@ gem 'resque'
 #gem 'resque-scheduler'
 gem 'SystemTimer'
 gem 'meta_search'
+gem 'mynyml-redgreen'
 
 
 # Bundle edge Rails instead:

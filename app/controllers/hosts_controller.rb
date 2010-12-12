@@ -13,11 +13,18 @@ class HostsController < ApplicationController
   def show
     @search = Host.where(:id => params[:id]).includes(:installations => [:package, :version, :arch]).search(params[:search])
     @host = @search.first
-    #@host = Host.where(:id => params[:id]).joins(:packages).includes(:installation)
-
-    respond_to do |format|
-      format.html # show.html.erb
-      format.json  { render :json => @host }
+    if @host.nil?
+      begin
+        raise ActiveRecord::RecordNotFound
+      rescue ActiveRecord::RecordNotFound
+        flash[:notice] = "The host you selected doesnt exist!"
+        redirect_to hosts_path
+      end
+    else
+      respond_to do |format|
+        format.html # show.html.erb
+        format.json  { render :json => @host }
+      end    
     end
   end
 
@@ -79,7 +86,7 @@ class HostsController < ApplicationController
       host.each do |h|
         Resque.enqueue(ScanHosts, h.name)
       end
-      flash[:notice] = "#{host.size} Hosts are being scanned for packages. Please visit the hosts page to view them"
+      flash[:notice] = "#{host.size} Hosts are being scanned for packages. Please visit the hosts page to view them."
       redirect_to hosts_path
     end
   end

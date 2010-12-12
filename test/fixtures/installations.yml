@@ -1,11 +1,57 @@
 # Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
 
-# This model initially had no columns defined.  If you add columns to the
-# model remove the '{}' from the fixture names and add the columns immediately
-# below each fixture, per the syntax in the comments below
-#
-one: {}
-# column: value
-#
-two: {}
-#  column: value
+one:
+ host: fedora
+ package: apache
+ arch: i686
+ version: one
+ installed_on: 2010-11-01
+
+one:
+ host: fedora
+ package: apache
+ arch: i686
+ version: two
+ installed_on: 2010-12-01
+ 
+three:
+ host: fedora
+ package: yum
+ arch: i686
+ version: two
+ installed_on: 2010-11-01
+ 
+four:
+ host: fedora
+ package: gimp
+ arch: i686
+ version: three
+ installed_on: 2010-11-01
+ 
+five:
+ host: centos
+ package: apache
+ arch: x64
+ version: one
+ installed_on: 2010-11-10
+
+six:
+ host: centos
+ package: yum
+ arch: x64
+ version: three
+ installed_on: 2010-11-10
+ 
+seven:
+ host: centos
+ package: gimp
+ arch: x64
+ version: one
+ installed_on: 2010-11-10
+ 
+eight:
+ host: centos
+ package: gimp
+ arch: i686
+ version: two
+ installed_on: 2010-12-10  
