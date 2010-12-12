@@ -4,6 +4,7 @@ class Package < ActiveRecord::Base
   has_many :hosts, :through => :installations, :uniq => true
   has_many :arches, :through => :installations
   has_many :versions, :through => :installations
+  has_many :repos, :through => :installables
   
   validates_uniqueness_of :name
   validates_format_of :name, :with => /\A(\S+\s?)+\Z/, :message => "can't be blank or contain trailing white space"

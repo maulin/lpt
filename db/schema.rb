@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20101208030505) do
+ActiveRecord::Schema.define(:version => 20101212211931) do
 
   create_table "arches", :force => true do |t|
     t.string   "name"
@@ -28,6 +28,21 @@ ActiveRecord::Schema.define(:version => 20101208030505) do
   end
 
   add_index "hosts", ["name"], :name => "index_hosts_on_name"
+
+  create_table "hosts_repos", :id => false, :force => true do |t|
+    t.integer "host_id"
+    t.integer "repo_id"
+  end
+
+  create_table "installables", :force => true do |t|
+    t.integer  "repo_id"
+    t.integer  "package_id"
+    t.integer  "version_id"
+    t.integer  "arch_id"
+    t.string   "latest_ind"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "installations", :force => true do |t|
     t.integer  "host_id",      :null => false
@@ -52,6 +67,13 @@ ActiveRecord::Schema.define(:version => 20101208030505) do
   end
 
   add_index "packages", ["name"], :name => "index_packages_on_name"
+
+  create_table "repos", :force => true do |t|
+    t.string   "name"
+    t.string   "url"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "versions", :force => true do |t|
     t.string   "name"

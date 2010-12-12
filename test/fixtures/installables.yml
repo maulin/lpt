@@ -1,0 +1,15 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+
+one:
+  repo_id: 1
+  package_id: 1
+  version_id: 1
+  arch_id: 1
+  latest_ind: MyString
+
+two:
+  repo_id: 1
+  package_id: 1
+  version_id: 1
+  arch_id: 1
+  latest_ind: MyString

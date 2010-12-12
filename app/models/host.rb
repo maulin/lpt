@@ -5,6 +5,7 @@ class Host < ActiveRecord::Base
   has_many :packages, :through => :installations, :uniq => true
   belongs_to :os
   belongs_to :arch
+  has_and_belongs_to_many :repos
 
   #The :uniq option removes duplicates in Ruby code, not in the database query. 
   #If you have a large number of duplicates, it might be better to use the :select option to tell the 
