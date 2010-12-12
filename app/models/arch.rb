@@ -2,8 +2,7 @@ class Arch < ActiveRecord::Base
 
   has_many :installations
   has_many :packages, :through => :installations
-  has_many :packages, :through => :installables  
-  has_many :host
+  has_many :hosts
   
   validates_uniqueness_of :name
   

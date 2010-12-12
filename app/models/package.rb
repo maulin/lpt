@@ -4,6 +4,7 @@ class Package < ActiveRecord::Base
   has_many :hosts, :through => :installations, :uniq => true
   has_many :arches, :through => :installations
   has_many :versions, :through => :installations
+  has_many :installables
   has_many :repos, :through => :installables
   
   validates_uniqueness_of :name

@@ -1,5 +1,4 @@
 class Installable < ActiveRecord::Base
   belongs_to :package
-  belongs_to :arch
-  belongs_to :version  
+  belongs_to :repo 
 end
