@@ -37,4 +37,14 @@ class HostsControllerTest < ActionController::TestCase
     assert_equal flash[:notice], "Host was successfully updated."
   end
   
+  test "scan hosts" do
+    get :scan, {:id => hosts(:fedora).id}
+    assert_equal flash[:notice], "fedora is being scanned for packages. Please refresh the page to view them."
+    assert_redirected_to host_path(hosts(:fedora))
+    
+    get :scan, {:id => 5}
+    assert_equal flash[:notice], "The host you selected doesnt exist!"    
+    assert_redirected_to hosts_path
+  end
+  
 end

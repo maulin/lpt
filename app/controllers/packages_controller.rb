@@ -15,7 +15,7 @@ class PackagesController < ApplicationController
         redirect_to packages_path    
       end
     else
-      @search = Installation.select('name, count(host_id) as host_count').joins(:version).where(:package_id => @package.id).group('name')
+      @search = Installation.select('name, count(host_id) as host_count').joins(:version).where(:package_id => @package.first.id).group('name')
       @installs = @search.all
       respond_to do |format|
         format.html # show.html.erb
