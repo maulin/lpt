@@ -1,8 +1,11 @@
 require 'test_helper'
 
 class HostTest < ActiveSupport::TestCase
-  # Replace this with your real tests.
-  test "the truth" do
-    assert true
+
+  test "name must be unique" do
+    host = Host.new(:name => "fedora")
+    assert(!host.valid?)
+    assert_equal(host.errors[:name].to_s, "has already been taken")
   end
+  
 end

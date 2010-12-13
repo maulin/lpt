@@ -1,9 +1,8 @@
 require 'test_helper'
 
 class HostsControllerTest < ActionController::TestCase
-  # Replace this with your real tests.
   
-  test "index" do
+  test "index host" do
     get :index
     assert_response :success
     assert_not_nil assigns[:hosts]
@@ -24,8 +23,18 @@ class HostsControllerTest < ActionController::TestCase
       post :create, :host => {:name => 'another_fedora_box'}
     end
     assert_redirected_to hosts_path
-    assert_equal flash[:notice], "1 Hosts are being scanned for packages. Please visit the hosts page to view them."
+    assert_equal flash[:notice], "1 Host is being scanned for packages. Please visit the hosts page to view them."
   end
   
+  test "edit host" do
+    put :edit, {:id => hosts(:fedora).id}
+    assert_response :success
+  end
+  
+  test "update host" do
+    put :update, {:id => hosts(:fedora).id}, :host => {:name => "updated_fedora"}
+    assert_response :redirect
+    assert_equal flash[:notice], "Host was successfully updated."
+  end
   
 end

@@ -1,4 +1,6 @@
 class HostsController < ApplicationController
+  include ActionView::Helpers::TextHelper
+
   respond_to :html,:json,:yaml
   # GET /hosts
   # GET /hosts.xml
@@ -86,7 +88,7 @@ class HostsController < ApplicationController
       host.each do |h|
         Resque.enqueue(ScanHosts, h.name)
       end
-      flash[:notice] = "#{host.size} Hosts are being scanned for packages. Please visit the hosts page to view them."
+      flash[:notice] = "#{pluralize(host.size, 'Host is', 'Hosts are')} being scanned for packages. Please visit the hosts page to view them."
       redirect_to hosts_path
     end
   end
