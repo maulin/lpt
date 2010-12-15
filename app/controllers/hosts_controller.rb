@@ -13,8 +13,9 @@ class HostsController < ApplicationController
   # GET /hosts/1
   # GET /hosts/1.xml
   def show
-    @search = Host.where(:id => params[:id]).includes(:installations => [:package, :version, :arch]).search(params[:search])
-    @host = @search.first
+    @search = Installation.where(:host_id => params[:id]).includes (:host, :package, :version, :arch).search(params[:search])
+    @host_installations = @search.all
+    @host = Host.find(params[:id])                         
     if @host.nil?
       begin
         raise ActiveRecord::RecordNotFound

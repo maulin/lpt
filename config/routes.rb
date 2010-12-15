@@ -67,6 +67,8 @@ Lpt::Application.routes.draw do
     resources :versions
     resources :arches
   end
+  
+  resources :installations
   root :to => 'hosts#index', :as => '/'
 
   # See how all your routes lay out with "rake routes"

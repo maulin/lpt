@@ -16,17 +16,30 @@
 <%= link_to 'Back', hosts_path %>
 
 <p>
+  <%= form_tag host_path(@host), :method => "get" do %>
+    Package name
+    <%= text_field :search, :package_name_contains %>
+    Version name
+    <%= text_field :search, :version_name_contains %>
+    Arch name
+    <%= text_field :search, :arch_name_contains %>        
+    <%= submit_tag "Search" %><br />
+    All searches will be AND'ed
+  <% end %>
+</p>
+
+<p>
   <table class="list">
     <tr>
-      <th><%= sort_link @search, :packages_name, "Package", :class => "package" %></th>
-      <th>Version</th>
-      <th>Arch</th>
-      <th>Install Date</th>
+      <th><%= sort_link @search, :package_name, "Package", :class => "package" %></th>
+      <th><%= sort_link @search, :version_name, "Version", :class => "version" %></th>
+      <th><%= sort_link @search, :arch_name, "Arch", :class => "arch" %></th>
+      <th><%= sort_link @search, :installed_on, "Install Date", :class => "installation" %></th>
      </tr>
 
-  <% @host.installations.each do |i| %>
+  <% @host_installations.each do |i| %>
     <tr class="<%= cycle("even", "odd") -%>">
-      <td><%= link_to i.package, package_path(i.package) %></td>
+      <td><%= i.package %></td>
       <td><%= i.version %></td>
       <td><%= i.arch %></td>
       <td><%= i.installed_on %></td>  
