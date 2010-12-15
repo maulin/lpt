@@ -19,7 +19,7 @@ class HostsController < ApplicationController
       @host = Host.find(params[:id])                         
       respond_to do |format|
         format.html # show.html.erb
-        format.json  { render :json => @host }
+        format.json  { render :json => [@host, @host_installations] }
       end       
     rescue ActiveRecord::RecordNotFound
       flash[:notice] = "The host you selected doesnt exist!"
