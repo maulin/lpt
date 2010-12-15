@@ -15,19 +15,15 @@ class HostsController < ApplicationController
   def show
     @search = Installation.where(:host_id => params[:id]).includes (:host, :package, :version, :arch).search(params[:search])
     @host_installations = @search.all
-    @host = Host.find(params[:id])                         
-    if @host.nil?
-      begin
-        raise ActiveRecord::RecordNotFound
-      rescue ActiveRecord::RecordNotFound
-        flash[:notice] = "The host you selected doesnt exist!"
-        redirect_to hosts_path
-      end
-    else
+    begin
+      @host = Host.find(params[:id])                         
       respond_to do |format|
         format.html # show.html.erb
         format.json  { render :json => @host }
-      end    
+      end       
+    rescue ActiveRecord::RecordNotFound
+      flash[:notice] = "The host you selected doesnt exist!"
+      redirect_to hosts_path
     end
   end
 
