@@ -13,7 +13,7 @@ class HostsController < ApplicationController
   # GET /hosts/1
   # GET /hosts/1.xml
   def show
-    @search = Installation.where(:host_id => params[:id]).includes (:host, :package, :version, :arch).search(params[:search])
+    @search = Installation.where(:host_id => params[:id]).includes(:host, :package, :version, :arch).search(params[:search])
     @host_installations = @search.all
     begin
       @host = Host.find(params[:id])                         
