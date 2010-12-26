@@ -10,10 +10,12 @@ gem 'net-ssh-multi', '1.0.1'
 gem 'inifile', '0.3.0'
 gem 'rails-erd'
 gem 'resque'
-#gem 'resque-scheduler'
+gem 'resque-scheduler'
+gem 'resque-status'
 gem 'SystemTimer'
 gem 'meta_search'
 gem 'mynyml-redgreen'
+gem 'ipaddress'
 
 
 # Bundle edge Rails instead:
