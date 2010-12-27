@@ -52,7 +52,7 @@ Lpt::Application.routes.draw do
     
   resources :versions,:constraints => { :id => /.*/ }
 
-  resources :hosts do
+  resources :hosts, :constraints => { :id => /.*/ } do
     #this way we can scan a collection of hosts as well as a single host
     get 'scan', :on => :member 
     collection do
