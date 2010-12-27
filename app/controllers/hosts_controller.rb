@@ -1,30 +1,30 @@
 class HostsController < ApplicationController
+  before_filter :find_by_name
+
   include ActionView::Helpers::TextHelper
 
   respond_to :html,:json,:yaml
-  # GET /hosts
-  # GET /hosts.xml
   def index
     @search = Host.includes(:arch, :os).search(params[:search])
     @hosts = @search.all
     respond_with(@hosts)
   end
 
-  # GET /hosts/1
-  # GET /hosts/1.xml
   def show
-    @search = Installation.where(:host_id => params[:id]).includes(:host, :package, :version, :arch).search(params[:search])
-    @host_installations = @search.all
     begin
-      @host = Host.find(params[:id])                         
-      respond_to do |format|
-        format.html # show.html.erb
-        format.json  { render :json => [@host, @host_installations] }
-      end       
+      @host = Host.find_by_name(params[:id])
     rescue ActiveRecord::RecordNotFound
       flash[:notice] = "The host you selected doesnt exist!"
       redirect_to hosts_path
     end
+
+    @search = Installation.where(:host_id => @host.id).includes(:host, :package, :version, :arch).search(params[:search])
+    @host_installations = @search.all
+    #@host = Host.find_by_name(params[:id])                         
+    respond_to do |format|
+      format.html # show.html.erb
+      format.json  { render :json => [@host, @host_installations] }
+    end       
   end
 
   def edit
