@@ -1,20 +1,20 @@
 <p>
-  <strong>Package Name:</strong>
-  <%=h @package.name %>
+  <strong>Version Name:</strong>
+  <%=h @version.name %>
 </p>
 <table class="list">
   <tr>
     <th>Version</th>
-    <th>Hosts</th>
+    <th>Packages</th>
   </tr>
   <% @installs.each do |i| -%>
     <tr class="<%= cycle("even", "odd") -%>">
-      <td><%= link_to(i.name, version_path(i.name)) %></td>
+      <td><%= link_to i.name, version_path(i.name)  %></td>
       <td><%= "#{i.host_count}" %> </td>
     </tr>
   <% end -%>
 </table>
 
 <p>
-  <%= link_to "View All Packages", packages_path %>
+  <%= link_to "View All versions", versions_path %>
 </p>

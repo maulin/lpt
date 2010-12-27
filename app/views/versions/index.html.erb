@@ -1,4 +1,4 @@
-<h1>Listing Packages</h1>
+<h1>Listing Versions</h1>
 
 <%= form_for @search do |f| %>
   <%= f.label :name_equals %>
@@ -11,13 +11,13 @@
 
 <table class="list">
   <tr>
-    <th><%= sort_link @search, :name, "Package Name" %></th>
-    <th>Number of Hosts<th>
+    <th><%= sort_link @search, :name, "Version Name" %></th>
+    <th>Packages<th>
   </tr>
-  <% @packages.each do |p| %>
+  <% @versions.each do |v| %>
     <tr class="<%= cycle("even", "odd") -%>">
-      <td><%= link_to p.name, package_path(p.name) %></td>
-      <td><%= p.host_count %></td>
+      <td><%= link_to v.name, version_path(v.name) %></td>
+      <td><%= "TODO"  %></td>
     </tr>
   <% end %>
 </table>

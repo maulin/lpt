@@ -16,6 +16,7 @@ gem 'SystemTimer'
 gem 'meta_search'
 gem 'mynyml-redgreen'
 gem 'ipaddress'
+gem 'ruby-debug'
 
 
 # Bundle edge Rails instead:

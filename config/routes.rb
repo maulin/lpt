@@ -1,5 +1,4 @@
 Lpt::Application.routes.draw do
-  #resources :hosts
 
   # The priority is based upon order of creation:
   # first created -> highest priority.
@@ -51,6 +50,8 @@ Lpt::Application.routes.draw do
   # You can have the root of your site routed with "root"
   # just remember to delete public/index.html.
     
+  resources :versions,:constraints => { :id => /.*/ }
+
   resources :hosts do
     #this way we can scan a collection of hosts as well as a single host
     get 'scan', :on => :member 
@@ -62,7 +63,8 @@ Lpt::Application.routes.draw do
     resource :arch
   end
 
-  resources :packages do
+   
+  resources :packages, :constraints => { :id => /.*/ } do
     resources :installations
     resources :versions
     resources :arches

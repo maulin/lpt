@@ -6,11 +6,11 @@ class Installation < ActiveRecord::Base
   
   def self.import(host, pkgs, host_os, host_arch, running_kernel)
     host_os = Os.find_or_create_by_name(host_os)
-    puts host_os
+    #puts host_os
     host_arch = Arch.find_or_create_by_name(host_arch)
-    puts host_arch
+    #puts host_arch
     host = Host.find_by_name(host)
-    puts host
+    #puts host
     host.update_attributes(:running_kernel => running_kernel.chomp.strip,
                             :arch_id => host_arch.id,
                             :os_id => host_os.id)
