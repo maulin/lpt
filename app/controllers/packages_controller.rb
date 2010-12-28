@@ -46,7 +46,7 @@ class PackagesController < ApplicationController
       respond_to do |format|
         format.html # show.html.erb
         format.json  { 
-          @search = Installation.select("hosts.name as \"Host\", versions.name as \"Version\"").joins(:version,:host,:package).where(:package_id => @package.id, :version_id => @package.version_ids)
+          @search = Installation.select("hosts.name as \"Host\", versions.name as \"Version\", arches.name as \"Arch\" " ).joins(:version,:host,:package,:arch).where(:package_id => @package.id, :version_id => @package.version_ids)
           @installs = @search.all
           render :json => [@package, @installs]
         }
