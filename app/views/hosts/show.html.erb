@@ -39,7 +39,7 @@
 
   <% @host_installations.each do |i| %>
     <tr class="<%= cycle("even", "odd") -%>">
-      <td><%= i.package %></td>
+      <td><%= link_to i.package, package_path(i.package) %></td>
       <td><%= i.version %></td>
       <td><%= i.arch %></td>
       <td><%= i.installed_on %></td>  
