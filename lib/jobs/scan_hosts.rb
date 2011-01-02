@@ -6,6 +6,7 @@ class ScanHosts
   @queue = :ssh_host
 
   def self.perform(hostname)
+    TIMEOUT=30
     puts "starting perform"
     pkgs = ""
     host_arch = ""
@@ -19,7 +20,7 @@ class ScanHosts
         puts "ssh successful"
         
         begin
-          timeout(10) do
+          timeout(TIMEOUT) do
             ssh.exec!("rpm -qa --qf \"%{name}===%{version}===%{release}===%{arch}===%{INSTALLTIME:date}==SPLIT==\"") do |channel, stream, data|
               if stream == :stderr
                 Rails.logger.info "RPM command error: #{data}"
@@ -37,7 +38,7 @@ class ScanHosts
         end
         
         begin
-          timeout 10 do
+          timeout(TIMEOUT) do
             ssh.exec!("uname -m") do |channel, stream, data|
               if stream == :stderr
                 Rails.logger.info "Arch command error: #{data}"
@@ -54,7 +55,7 @@ class ScanHosts
         end
 
         begin
-          timeout 10 do
+          timeout(TIMEOUT) do
             ssh.exec!("uname -r") do |channel, stream, data|
               if stream == :stderr
                 Rails.logger.info "Running Kernel command error: #{data}"
@@ -71,7 +72,7 @@ class ScanHosts
         end          
 
         begin
-        timeout 10 do
+        timeout(TIMEOUT) do
           ssh.exec!("test -f /etc/redhat-release && cat /etc/redhat-release") do |channel, stream, data|
             if stream == :stderr
               Rails.logger.info "Host OS command error: #{data}"
