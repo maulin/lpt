@@ -11,7 +11,7 @@ class ScanHosts
   @@import_params["running_kernel"] = ""
   @@import_params["host_os"] = ""
   @@user = "test"
-  @@password = "1q2w3E"
+  @@password = "1q2w3e"
 
 
   def self.perform(hostname)
