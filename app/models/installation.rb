@@ -4,23 +4,22 @@ class Installation < ActiveRecord::Base
   belongs_to :arch
   belongs_to :version
   
-  def self.import(host, pkgs, host_os, host_arch, running_kernel)
-    host_os = Os.find_or_create_by_name(host_os)
+  def self.import(host, import_params)
+    host_os = Os.find_or_create_by_name(import_params["host_os"])
     #puts host_os
-    host_arch = Arch.find_or_create_by_name(host_arch)
+    host_arch = Arch.find_or_create_by_name(import_params["host_arch"])
     #puts host_arch
     host = Host.find_by_name(host)
     #puts host
-    host.update_attributes(:running_kernel => running_kernel.chomp.strip,
+    host.update_attributes(:running_kernel => import_params["running_kernel"].chomp.strip,
                             :arch_id => host_arch.id,
                             :os_id => host_os.id)
 
-    pkgs = pkgs.split("==SPLIT==")
-    prev_installed = Installation.select("package_id, version_id, arch_id").where(:host_id => 1).all.collect{|i| i.package_id.to_s+'==='+i.version_id.to_s+'==='+i.arch_id.to_s}
+    import_params["pkgs"] = import_params["pkgs"].split("==SPLIT==")
+    prev_installed = Installation.select("package_id, version_id, arch_id").where(:host_id => host.id).all.collect{|i| i.package_id.to_s+'==='+i.version_id.to_s+'==='+i.arch_id.to_s}
     curr_installed = []
     new_pkgs = []
-
-    pkgs.each do |pkg|
+    import_params["pkgs"].each do |pkg|
       pkg, version, release, arch, installed_on = pkg.split("===").map{|s| s.chomp.strip}
       version = "#{version}-#{release}"
       p_id = Package.find_or_create_by_name(pkg).id
@@ -48,7 +47,7 @@ class Installation < ActiveRecord::Base
     uninstalled.each do |u|
       p_id, v_id, a_id = u.split("===")
       i = Installation.where(:host_id => host.id, :package_id => p_id.to_i, :version_id => v_id.to_i, :arch_id => a_id.to_i).first
-      i.update_attributes(:currently_installed => 0)
+      i.update_attributes(:currently_installed => 0) unless i.nil?
     end
     
   end # end self.import

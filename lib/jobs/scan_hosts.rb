@@ -4,96 +4,74 @@ require 'net/ssh'
 class ScanHosts
 
   @queue = :ssh_host
+  TIMEOUT=90
+  @@import_params = {}
+  @@import_params["pkgs"] = ""
+  @@import_params["host_arch"] = ""
+  @@import_params["running_kernel"] = ""
+  @@import_params["host_os"] = ""
+  @@user = "test"
+  @@password = "1q2w3E"
+
 
   def self.perform(hostname)
-    TIMEOUT=30
-    puts "starting perform"
-    pkgs = ""
-    host_arch = ""
-    running_kernel = ""
-    host_os = ""
-    user = "test"
-    password = "1q2w3e"
+    Rails.logger.info "Starting perform for ScanHosts(#{hostname})"
     
     begin
-      Net::SSH.start(hostname, user, :password => password) do |ssh|
-        puts "ssh successful"
-        
-        begin
-          timeout(TIMEOUT) do
-            ssh.exec!("rpm -qa --qf \"%{name}===%{version}===%{release}===%{arch}===%{INSTALLTIME:date}==SPLIT==\"") do |channel, stream, data|
-              if stream == :stderr
-                Rails.logger.info "RPM command error: #{data}"
-                puts "rpm error!"
-                exit 1
-              else            
-                pkgs << data
-              end
-            end
-          end
-        rescue Timeout::Error
-          Rails.logger.info "RPM command timeout."
-          puts "rpm timeout"
-          exit 1
-        end
-        
-        begin
-          timeout(TIMEOUT) do
-            ssh.exec!("uname -m") do |channel, stream, data|
-              if stream == :stderr
-                Rails.logger.info "Arch command error: #{data}"
-                exit 1
-              else        
-                host_arch << data
-              end
-            end
-          end
-        rescue Timeout::Error
-          Rails.logger.info "Arch command timeout."
-          puts "arch timeout"
-          exit 1
-        end
-
-        begin
-          timeout(TIMEOUT) do
-            ssh.exec!("uname -r") do |channel, stream, data|
-              if stream == :stderr
-                Rails.logger.info "Running Kernel command error: #{data}"
-                exit 1
-              else        
-                running_kernel << data
-              end
-            end
-          end
-        rescue Timeout::Error
-          Rails.logger.info "running_kernel command timeout."
-          puts "running kernel timeout"
-          exit 1
-        end          
-
-        begin
+      Net::SSH.start(hostname, @@user, :password => @@password) do |ssh|
         timeout(TIMEOUT) do
-          ssh.exec!("test -f /etc/redhat-release && cat /etc/redhat-release") do |channel, stream, data|
-            if stream == :stderr
-              Rails.logger.info "Host OS command error: #{data}"
-              exit 1
-            else        
-              host_os << data
-            end
-          end
-        end
-        rescue Timeout::Error
-          Rails.logger.info "Host os command timeout."
-          puts "host os timeout"
-          exit 1
-        end  
-        
-      end #end ssh block
+          ssh.exec!("uname -a") 
+        end # end timeout
+      end # end ssh block
+      Rails.logger.info "SSH test successful for #{hostname} with user=#{@@user}."
+      puts "SSH test successful for #{hostname} with user=#{@@user}."
     rescue Net::SSH::Exception => e
-      Rails.logger.info "Fatal: Could not ssh as #{user} to #{hostname}."
+      Rails.logger.info "Fatal: Could not ssh as #{@@user} to #{hostname}."
+      puts "Fatal: Could not ssh as #{@@user} to #{hostname}."
       exit 1
     end
-    Installation.import(hostname, pkgs, host_os, host_arch, running_kernel)
+
+    do_ssh(hostname, "rpm -qa --qf \"%{name}===%{version}===%{release}===%{arch}===%{INSTALLTIME:date}==SPLIT==\"","pkgs")
+
+    # use one ssh exec for two things
+    do_ssh(hostname, "uname -mr","host_arch") 
+
+    @@import_params["running_kernel"]=@@import_params["host_arch"].split[0]
+    @@import_params["host_arch"]=@@import_params["host_arch"].split[1]
+
+    do_ssh(hostname, "test -f /etc/redhat-release && cat /etc/redhat-release","host_os") 
+
+    Installation.import(hostname, @@import_params)
+    Rails.logger.info "Finish perform for ScanHosts(#{hostname})"
   end #end perform
+
+  def self.do_ssh(hostname, command, import_params_key)
+    begin
+      Net::SSH.start(hostname, @@user, :password => @@password) do |ssh|
+        begin
+          timeout(TIMEOUT) do
+            ssh.exec!(command) do |channel, stream, data|
+              if stream == :stderr
+                Rails.logger.info "The ssh command: #{command} had an error!"
+                puts "The ssh command: #{command} had an error!"
+                exit 1
+              else
+                @@import_params[import_params_key] << data
+              end # End if
+            end # End ssh.exec
+          end # End timeout
+        rescue
+          Rails.logger.info "The ssh command: #{command} timed-out!"
+          puts "The ssh command: #{command} timed-out!"
+          exit 1
+        end # End begin/rescue
+      end # End SSH.start
+    rescue Net::SSH::Exception => e
+      Rails.logger.info "The ssh command: #{command} had an error!"
+      puts "The ssh command: #{command} had an error!"
+      exit 1
+    end
+
+  end # end do_ssh
   
 end
