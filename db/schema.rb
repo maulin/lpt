@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20101212211931) do
+ActiveRecord::Schema.define(:version => 20110102035828) do
 
   create_table "arches", :force => true do |t|
     t.string   "name"
@@ -45,13 +45,14 @@ ActiveRecord::Schema.define(:version => 20101212211931) do
   end
 
   create_table "installations", :force => true do |t|
-    t.integer  "host_id",      :null => false
-    t.integer  "package_id",   :null => false
+    t.integer  "host_id",                               :null => false
+    t.integer  "package_id",                            :null => false
     t.datetime "installed_on"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "version_id"
     t.integer  "arch_id"
+    t.boolean  "currently_installed", :default => true
   end
 
   create_table "oses", :force => true do |t|
