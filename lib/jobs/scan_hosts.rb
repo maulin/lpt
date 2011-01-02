@@ -15,7 +15,7 @@ class ScanHosts
     password = "1q2w3e"
     
     begin
-      Net::SSH.start(hostname, user, :password => password) do |ssh|
+      Net::SSH.start(hostname, user, :password => password, :timeout => 10) do |ssh|
         puts "ssh successful"
         
         begin
