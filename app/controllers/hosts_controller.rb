@@ -78,7 +78,7 @@ class HostsController < ApplicationController
   def scan(*host)
     if host.empty?
       begin
-        host = Host.find(params[:id])
+        host = Host.find_by_name(params[:id])
         Resque.enqueue(ScanHosts, host.name)
         flash[:notice] = "#{host.name} is being scanned for packages. Please refresh the page to view them."
         redirect_to host        
