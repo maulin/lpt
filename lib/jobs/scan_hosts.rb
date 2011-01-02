@@ -20,14 +20,13 @@ class ScanHosts
         
         begin
           timeout(10) do
-            ssh.exec!("rpm -ma --qf \"%{name}===%{version}===%{release}===%{arch}===%{INSTALLTIME:date}==SPLIT==\"") do |channel, stream, data|
+            ssh.exec!("rpm -qa --qf \"%{name}===%{version}===%{release}===%{arch}===%{INSTALLTIME:date}==SPLIT==\"") do |channel, stream, data|
               if stream == :stderr
                 Rails.logger.info "RPM command error: #{data}"
-                puts "rpm error"
+                puts "rpm error!"
                 exit 1
               else            
                 pkgs << data
-                puts "rpm success"
               end
             end
           end

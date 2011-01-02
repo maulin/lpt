@@ -18,7 +18,7 @@ class HostsController < ApplicationController
       redirect_to hosts_path
     end
 
-    @search = Installation.where(:host_id => @host.id).includes(:host, :package, :version, :arch).search(params[:search])
+    @search = Installation.where(:host_id => @host.id, :currently_installed => 1).includes(:host, :package, :version, :arch).search(params[:search])
     @host_installations = @search.all
     #@host = Host.find_by_name(params[:id])                         
     respond_to do |format|
