@@ -5,6 +5,8 @@
 <p>
   <b>Host Name:</b>
   <%= @host.name %><br />
+  <b>Operating System:</b>
+  <%= @host.os %><br />
   <b>Running Kernel:</b>
   <%= @host.running_kernel %><br />
   <%= link_to 'Scan Host for Packages', scan_host_path(@host) %>
