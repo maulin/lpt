@@ -13,10 +13,8 @@ class ScanHosts
   @@user = "test"
   @@password = "1q2w3e"
 
-
   def self.perform(hostname)
     Rails.logger.info "Starting perform for ScanHosts(#{hostname})"
-    
     begin
       Net::SSH.start(hostname, @@user, :password => @@password) do |ssh|
         timeout(TIMEOUT) do
