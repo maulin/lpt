@@ -45,7 +45,7 @@ class HostsController < ApplicationController
   end
 
   def update
-    @host = Host.find(params[:id])
+    @host = Host.find_by_name(params[:id])
 
     respond_to do |format|
       if @host.update_attributes(params[:host])

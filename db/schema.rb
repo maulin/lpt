@@ -47,13 +47,20 @@ ActiveRecord::Schema.define(:version => 20110102035828) do
   create_table "installations", :force => true do |t|
     t.integer  "host_id",                               :null => false
     t.integer  "package_id",                            :null => false
+    t.integer  "version_id",                            :null => false
+    t.integer  "arch_id",                               :null => false
     t.datetime "installed_on"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "version_id"
-    t.integer  "arch_id"
     t.boolean  "currently_installed", :default => true
   end
+
+  add_index "installations", ["arch_id"], :name => "index_installations_on_arch_id"
+  add_index "installations", ["host_id", "package_id"], :name => "index_installations_on_host_id_and_package_id"
+  add_index "installations", ["host_id"], :name => "index_installations_on_host_id"
+  add_index "installations", ["package_id"], :name => "index_installations_on_package_id"
+  add_index "installations", ["version_id", "package_id"], :name => "index_installations_on_version_id_and_package_id"
+  add_index "installations", ["version_id"], :name => "index_installations_on_version_id"
 
   create_table "oses", :force => true do |t|
     t.string   "name"

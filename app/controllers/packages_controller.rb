@@ -20,8 +20,8 @@ class PackagesController < ApplicationController
           @pkg_ver_ids["ver_ids"] << p.version_ids
         }
         #debugger
-        @search_new = Installation.select("packages.name as \"Package\", hosts.name as \"Host\", versions.name as \"Version\"")\
-        .joins(:version,:host,:package).where(:package_id => @pkg_ver_ids["pkg_ids"], :version_id => @pkg_ver_ids["ver_ids"].flatten)
+        @search_new = Installation.select("packages.name as \"Package\", hosts.name as \"Host\", versions.name as \"Version\", arches.name as \"Arch\"")\
+        .joins(:package,:host,:version,:arch).where(:package_id => @pkg_ver_ids["pkg_ids"], :version_id => @pkg_ver_ids["ver_ids"].flatten)
 
         @installs = @search_new.all
         render :json => @installs
@@ -46,7 +46,9 @@ class PackagesController < ApplicationController
       respond_to do |format|
         format.html # show.html.erb
         format.json  { 
-          @search = Installation.select("hosts.name as \"Host\", versions.name as \"Version\", arches.name as \"Arch\" " ).joins(:version,:host,:package,:arch).where(:package_id => @package.id, :version_id => @package.version_ids)
+          @search = Installation.select("hosts.name as \"Host\", versions.name as \"Version\", arches.name as \"Arch\" " ).joins\
+          (:version,:host,:package,:arch).where(:package_id => @package.id, :version_id => @package.version_ids)
+
           @installs = @search.all
           render :json => [@package, @installs]
         }
