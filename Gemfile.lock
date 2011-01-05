@@ -138,7 +138,7 @@ DEPENDENCIES
   net-ssh (= 2.0.23)
   rails (= 3.0.3)
   rails-erd
-  resque
+  resque (= 1.10.0)
   resque-scheduler
   resque-status
   ruby-debug

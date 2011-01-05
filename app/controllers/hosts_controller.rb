@@ -79,7 +79,7 @@ class HostsController < ApplicationController
     if host.empty?
       begin
         host = Host.find_by_name(params[:id])
-        Resque.enqueue(ScanHosts, host.name)
+        ScanHosts.create(:hostname => host.name)
         flash[:notice] = "#{host.name} is being scanned for packages. Please refresh the page to view them."
         redirect_to host        
       rescue ActiveRecord::RecordNotFound
@@ -88,7 +88,7 @@ class HostsController < ApplicationController
       end
     else
       host.each do |h|
-        Resque.enqueue(ScanHosts, h.name)
+        ScanHosts.create(:hostname => h.name)
       end
       flash[:notice] = "#{pluralize(host.size, 'Host is', 'Hosts are')} being scanned for packages. Please visit the hosts page to view them."
       redirect_to hosts_path
