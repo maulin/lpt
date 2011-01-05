@@ -57,11 +57,6 @@ GEM
       term-ansicolor (>= 1.0.4)
     mysql (2.8.1)
     net-ssh (2.0.23)
-    net-ssh-gateway (1.0.1)
-      net-ssh (>= 1.99.1)
-    net-ssh-multi (1.0.1)
-      net-ssh (>= 1.99.2)
-      net-ssh-gateway (>= 0.99.0)
     polyglot (0.3.1)
     rack (1.2.1)
     rack-mount (0.6.13)
@@ -141,10 +136,9 @@ DEPENDENCIES
   mynyml-redgreen
   mysql (= 2.8.1)
   net-ssh (= 2.0.23)
-  net-ssh-multi (= 1.0.1)
   rails (= 3.0.3)
   rails-erd
-  resque
+  resque (= 1.10.0)
   resque-scheduler
   resque-status
   ruby-debug
