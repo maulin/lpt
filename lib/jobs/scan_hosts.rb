@@ -3,18 +3,18 @@ require 'net/ssh'
 require 'resque/job_with_status'
 
 class ScanHosts < Resque::JobWithStatus
-  
+ 
   TIMEOUT=90
   COMMANDS = {}
   COMMANDS["1-red_hat_rpm"] = "rpm -qa --qf \"%{name}===%{version}===%{release}===%{arch}===%{INSTALLTIME:date}==SPLIT==\""
   COMMANDS["2-host_arch_kernel"] = "uname -mr"
   COMMANDS["3-red_hat_os"] = "test -f /etc/redhat-release && cat /etc/redhat-release"
   CMD_NAMES = COMMANDS.keys.sort
-  
+ 
   #@queue = :ssh_host
   @@user = "test"
   @@password = "1q2w3e"
-  
+ 
   def exec_command(ssh, name, command)
     output = ""
     begin
@@ -28,13 +28,13 @@ class ScanHosts < Resque::JobWithStatus
           end
         end
       end
-      return output    
+      return output
     rescue Timeout::Error
       failed("#{name} command timed out")
       exit 1
-    end #end exec_command begin        
+    end #end exec_command begin
   end #end exec_commands 
-  
+ 
   def perform
     import_params = {}
     hostname = options['hostname']
@@ -56,5 +56,5 @@ class ScanHosts < Resque::JobWithStatus
       exit 1
     end #end ssh begin
   end #end perform
-  
+ 
 end #end ScanHosts
