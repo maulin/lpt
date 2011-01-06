@@ -1,0 +1,6 @@
+<tr class="<%= cycle("even", "odd") -%>">
+  <td><%= link_to installation.package, package_path(installation.package) %></td>
+  <td><%= installation.version %></td>
+  <td><%= installation.arch %></td>
+  <td><%= installation.installed_on %></td>  
+</tr>
