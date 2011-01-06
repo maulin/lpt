@@ -10,6 +10,13 @@
   <%= link_to 'Scan Host for Packages', scan_host_path(@host) %>
 </p>
 
+<p>
+  <b>Package split by architecture</b><br />
+  <% @arch_split.each do |i| %>
+    <%= "#{i.name}:" %> <%= link_to "#{i.count}", :controller => "hosts", :action => "show", :search => {"arch_name_contains" => "#{i.name}"} %><br />
+  <% end %>
+</p>  
+
 <h3>Packages installed on this host</h3>
 
 <%= link_to 'Edit', edit_host_path(@host) %> |
@@ -37,17 +44,7 @@
       <th><%= sort_link @search, :installed_on, "Install Date", :class => "installation" %></th>
      </tr>
 
-  <% @host_installations.each do |i| %>
-    <tr class="<%= cycle("even", "odd") -%>">
-      <td><%= link_to i.package, package_path(i.package) %></td>
-      <td><%= i.version %></td>
-      <td><%= i.arch %></td>
-      <td><%= i.installed_on %></td>  
-    </tr>
-  <% end %>
-</table>
+    <%= render @host_installations %>
 
-</p>
-
-<%= link_to 'Edit', edit_host_path(@host) %> |
-<%= link_to 'Back', hosts_path %>
+  </table>
+</p>      

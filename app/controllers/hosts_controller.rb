@@ -12,6 +12,7 @@ class HostsController < ApplicationController
 
   def show
     @host = Host.find_by_name(params[:id])
+    @arch_split = Installation.select('arches.name, count(*) as count').joins(:arch).where(:host_id => @host.id).group(:arch_id).all
     @search = Installation.where(:host_id => @host.id, :currently_installed => 1).includes(:host, :package, :version, :arch).search(params[:search])
     @host_installations = @search.all
     #@host = Host.find_by_name(params[:id])                         
