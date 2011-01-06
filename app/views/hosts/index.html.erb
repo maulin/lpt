@@ -1,5 +1,6 @@
-<% title "Hosts List" %>
-<span class="top">
-  <%= link_to 'New Host', new_host_path %>
-</span>
+<p>
+  <span class="top">
+    <%= link_to 'Create New Host', new_host_path %>
+  </span>
+</p>
 <%= render 'list', :hosts => @hosts, :header => "Hosts"  %>

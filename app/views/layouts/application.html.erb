@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title><%= h(yield(:title) || "LPT: Linux Package Tracker.") %></title>
+  <title><%= h(yield(:title) || "Pipman") %></title>
   <% unless flash[:notice].blank? %>
     <div id="notification"><%= flash[:notice] %></div>
   <% end %>
@@ -13,10 +13,15 @@
 <body>
 
   <div id="header">
-    <p>
-	    <h1>Linux Package Tracker</h1><br />
-	  </p>
+    <div class="title">
+      <center>Pipman</center>
+    </div>
+    <%= render :partial => "home/menu" -%>
   </div>
+  
+  <% unless flash[:notice].blank? %>
+    <div id="notification"><%= flash[:notice] %></div>
+  <% end %>  
 
   <%= yield %>
 

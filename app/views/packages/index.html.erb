@@ -1,11 +1,11 @@
-<h1>Listing Packages</h1>
+<% title "Package List" %><br />
 
 <%= form_for @search do |f| %>
-  <%= f.label :name_equals %>
+  <%= f.label "Package =" %>
   <%= f.text_field :name_equals %><br />
-  <h6> OR </h6>
-  <%= f.label :name_contains %>
-  <%= f.text_field :name_contains %><br />
+  Or<br />
+  <%= f.label "Package ~=" %>
+  <%= f.text_field :name_contains %>
   <%= f.submit "Search"%>
 <% end -%>
 
