@@ -18,7 +18,7 @@ class ScanHosts < Resque::JobWithStatus
   def exec_command(ssh, name, command)
     output = ""
     begin
-      timeout(10) do
+      timeout(TIMEOUT) do
         ssh.exec!(command) do |channel, stream, data|
           if stream == :stderr
             failed("#{name} error: #{data}")

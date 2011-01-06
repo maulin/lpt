@@ -6,13 +6,15 @@ one:
  arch: i686
  version: one
  installed_on: 2010-11-01
+ currently_installed: 0
 
-one:
+two:
  host: fedora
  package: apache
  arch: i686
  version: two
  installed_on: 2010-12-01
+ currently_installed: 1
  
 three:
  host: fedora
@@ -20,6 +22,7 @@ three:
  arch: i686
  version: two
  installed_on: 2010-11-01
+ currently_installed: 1
  
 four:
  host: fedora
@@ -27,6 +30,7 @@ four:
  arch: i686
  version: three
  installed_on: 2010-11-01
+ currently_installed: 1
  
 five:
  host: centos
@@ -34,6 +38,7 @@ five:
  arch: x64
  version: one
  installed_on: 2010-11-10
+ currently_installed: 1
 
 six:
  host: centos
@@ -41,6 +46,7 @@ six:
  arch: x64
  version: three
  installed_on: 2010-11-10
+ currently_installed: 1
  
 seven:
  host: centos
@@ -48,10 +54,12 @@ seven:
  arch: x64
  version: one
  installed_on: 2010-11-10
+ currently_installed: 1
  
 eight:
  host: centos
  package: gimp
  arch: i686
  version: two
- installed_on: 2010-12-10  
+ installed_on: 2010-12-10
+ currently_installed: 0

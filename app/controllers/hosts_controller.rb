@@ -11,13 +11,7 @@ class HostsController < ApplicationController
   end
 
   def show
-    begin
-      @host = Host.find_by_name(params[:id])
-    rescue ActiveRecord::RecordNotFound
-      flash[:notice] = "The host you selected doesnt exist!"
-      redirect_to hosts_path
-    end
-
+    @host = Host.find_by_name(params[:id])
     @search = Installation.where(:host_id => @host.id, :currently_installed => 1).includes(:host, :package, :version, :arch).search(params[:search])
     @host_installations = @search.all
     #@host = Host.find_by_name(params[:id])                         
@@ -28,7 +22,7 @@ class HostsController < ApplicationController
   end
 
   def edit
-    @host = Host.find(params[:id])
+    @host = Host.find_by_name(params[:id])
   end
 
   def new
@@ -77,15 +71,10 @@ class HostsController < ApplicationController
 
   def scan(*host)
     if host.empty?
-      begin
-        host = Host.find_by_name(params[:id])
-        ScanHosts.create(:hostname => host.name)
-        flash[:notice] = "#{host.name} is being scanned for packages. Please refresh the page to view them."
-        redirect_to host        
-      rescue ActiveRecord::RecordNotFound
-        flash[:notice] = "The host you selected doesnt exist!"  
-        redirect_to hosts_path
-      end
+      host = Host.find_by_name(params[:id])
+      ScanHosts.create(:hostname => host.name)
+      flash[:notice] = "#{host.name} is being scanned for packages. Please refresh the page to view them."
+      redirect_to host        
     else
       host.each do |h|
         ScanHosts.create(:hostname => h.name)
