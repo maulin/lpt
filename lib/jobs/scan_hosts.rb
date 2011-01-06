@@ -9,6 +9,7 @@ class ScanHosts < Resque::JobWithStatus
   COMMANDS["1-red_hat_rpm"] = "rpm -qa --qf \"%{name}===%{version}===%{release}===%{arch}===%{INSTALLTIME:date}==SPLIT==\""
   COMMANDS["2-host_arch_kernel"] = "uname -mr"
   COMMANDS["3-red_hat_os"] = "test -f /etc/redhat-release && cat /etc/redhat-release"
+  COMMANDS["4-yum_repo_list"] = "yum repolist all -v"
   CMD_NAMES = COMMANDS.keys.sort
  
   #@queue = :ssh_host
@@ -46,8 +47,10 @@ class ScanHosts < Resque::JobWithStatus
         import_params["pkgs"] = exec_command(ssh, CMD_NAMES[0], COMMANDS["1-red_hat_rpm"])
         import_params["running_kernel"], import_params["host_arch"] = exec_command(ssh, CMD_NAMES[1], COMMANDS["2-host_arch_kernel"]).split
         import_params["host_os"] = exec_command(ssh, CMD_NAMES[2], COMMANDS["3-red_hat_os"])
+        import_params["yum_repos"] = exec_command(ssh, CMD_NAMES[3], COMMANDS["4-yum_repo_list"])
         
         Installation.import(hostname, import_params)
+        Repo.import(import_params)
 
         completed("Finished scanning #{hostname}.")
       end
