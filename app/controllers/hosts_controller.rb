@@ -18,7 +18,10 @@ class HostsController < ApplicationController
     #@host = Host.find_by_name(params[:id])                         
     respond_to do |format|
       format.html # show.html.erb
-      format.json  { render :json => [@host, @host_installations] }
+      format.json  { render :json => [@host.to_json(:only => [:name, :running_kernel]), 
+                                      @host_installations.to_json(:only => :installed_on, :include => {:package => {:only => :name},
+                                                                                                       :version => {:only => :name},
+                                                                                                       :arch => {:only => :name}})] }
     end       
   end
 
