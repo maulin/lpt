@@ -30,29 +30,16 @@ class PackagesController < ApplicationController
   end
 
   def show
-    #@package = Package.where(:id => params[:id])
-    #@search = Package.pkg_hosts.search(params[:search])
-    @package = Package.find_by_name(params[:id])
-    if @package.nil?
-      begin
-        raise ActiveRecord::RecordNotFound
-      rescue ActiveRecord::RecordNotFound
-        flash[:notice] = "The package you selected doesnt exist!"
-        redirect_to packages_path    
-      end
-    else
-      @search = Installation.select('name, count(host_id) as host_count').joins(:version).where(:package_id => @package.id).group('name')
-      @installs = @search.all
-      respond_to do |format|
-        format.html # show.html.erb
-        format.json  { 
-          @search = Installation.select("hosts.name as \"Host\", versions.name as \"Version\", arches.name as \"Arch\" " ).joins\
-          (:version,:host,:package,:arch).where(:package_id => @package.id, :version_id => @package.version_ids)
-
-          @installs = @search.all
-          render :json => [@package, @installs]
-        }
-      end    
+    @search = Installation.select('name, count(host_id) as host_count').joins(:version).where(:package_id => @package.id).group('name')
+    @installs = @search.all
+    respond_to do |format|
+      format.html # show.html.erb
+      format.json  { 
+        @search = Installation.select("hosts.name as \"Host\", versions.name as \"Version\", arches.name as \"Arch\" " ).joins\
+        (:version,:host,:package,:arch).where(:package_id => @package.id, :version_id => @package.version_ids)
+        @installs = @search.all
+        render :json => [@package, @installs]
+      }
     end          
   end
 

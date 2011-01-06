@@ -9,13 +9,12 @@ class PackagesControllerTest < ActionController::TestCase
   end
   
   test "show package" do
-    get :show, {:id => packages(:apache).id}
+    get :show, {:id => packages(:apache).name}
     assert_response :success
     assert_not_nil assigns(:package)
     
     get :show, {:id => 12}
-    assert_equal flash[:notice], "The package you selected doesnt exist!"
-    assert_redirected_to packages_path
+    assert_response :missing
   end
   
   test "create package" do
