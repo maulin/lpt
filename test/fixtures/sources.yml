@@ -1,0 +1,11 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+
+one:
+  host_id: 1
+  repo_id: 
+  enabled: false
+
+two:
+  host_id: 1
+  repo_id: 
+  enabled: false

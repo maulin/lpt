@@ -43,14 +43,17 @@ class ScanHosts < Resque::JobWithStatus
     Rails.logger.info "Starting perform for ScanHosts(#{hostname})"
     begin
       Net::SSH.start(hostname, @@user, :password => @@password, :timeout => TIMEOUT) do |ssh|
-        
+      
+        at(1,3,"Running commands...")  
         import_params["pkgs"] = exec_command(ssh, CMD_NAMES[0], COMMANDS["1-red_hat_rpm"])
         import_params["running_kernel"], import_params["host_arch"] = exec_command(ssh, CMD_NAMES[1], COMMANDS["2-host_arch_kernel"]).split
         import_params["host_os"] = exec_command(ssh, CMD_NAMES[2], COMMANDS["3-red_hat_os"])
         import_params["yum_repos"] = exec_command(ssh, CMD_NAMES[3], COMMANDS["4-yum_repo_list"])
         
+        at(2, 3, "Importing installations...")
         Installation.import(hostname, import_params)
-        Repo.import(import_params)
+        at(3, 3, "Importing repos...")
+        Repo.import(hostname, import_params)
 
         completed("Finished scanning #{hostname}.")
       end

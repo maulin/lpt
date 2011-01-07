@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110102035828) do
+ActiveRecord::Schema.define(:version => 20110107152108) do
 
   create_table "arches", :force => true do |t|
     t.string   "name"
@@ -28,11 +28,6 @@ ActiveRecord::Schema.define(:version => 20110102035828) do
   end
 
   add_index "hosts", ["name"], :name => "index_hosts_on_name"
-
-  create_table "hosts_repos", :id => false, :force => true do |t|
-    t.integer "host_id"
-    t.integer "repo_id"
-  end
 
   create_table "installables", :force => true do |t|
     t.integer  "repo_id"
@@ -72,6 +67,14 @@ ActiveRecord::Schema.define(:version => 20110102035828) do
   create_table "repos", :force => true do |t|
     t.string   "name"
     t.string   "url"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "sources", :force => true do |t|
+    t.integer  "host_id"
+    t.integer  "repo_id"
+    t.boolean  "enabled"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
