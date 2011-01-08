@@ -33,6 +33,26 @@ table.list th a, th a:visited {
   color:#FFFFFF;
 }
 
+
+
+table th {
+  text-decoration:none;
+  text-align:left;
+  background:#555555;
+  color:#FFFFFF;
+}
+table th p {
+  display:block;
+  font:bold 11px arial,sans-serif;
+}
+table th a, th a:visited {
+  padding:2px 15px 2px 5px;
+  color:#FFFFFF;
+}
+
+
+
+
 table.list td, th { line-height:1.3em; }
 table.list td { vertical-align: top; border: 1px #eeeeee solid; padding: 4px }
 table.list td.id { width: 2%; text-align: center;}

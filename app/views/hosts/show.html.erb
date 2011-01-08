@@ -1,24 +1,61 @@
 <% title @host.name %>
 
-<p>
-  <h3>Host Information</h3>
-  <b>Host Name:</b>
-  <%= @host.name %><br />
-  <b>Operating System:</b>
-  <%= @host.os %><br />
-  <b>Running Kernel:</b>
-  <%= @host.running_kernel %><br />
+<div>
+  <h3>Host Information.</h3>
+  <table>
+    <tr class="<%= cycle("even", "odd") -%>">
+      <td>Host Name</td>  
+      <td><%= @host.name %></td>
+    </tr>      
+    <tr class="<%= cycle("even", "odd") -%>">
+      <td>Operating System</td>  
+      <td><%= @host.os %></td>
+    </tr>      
+    <tr class="<%= cycle("even", "odd") -%>">      
+      <td>Running Kernel</td>  
+      <td><%= @host.running_kernel %></td>
+    </tr>
+  </table>  
   <%= link_to 'Scan Host for Packages', scan_host_path(@host) %>
-</p>
+</div>
 
+<div>
 <p>
-  <b>Package split by architecture</b><br />
-  <% @arch_split.each do |i| %>
-    <%= "#{i.name}:" %> <%= link_to "#{i.count}", :controller => "hosts", :action => "show", :search => {"arch_name_contains" => "#{i.name}"} %><br />
-  <% end %>
-</p>  
+  <b>Package split by architecture.</b><br />
+  <table>
+    <tr>
+      <th>Architecture</th>
+      <th>Number of packages</th>
+    </tr>   
+    <% @arch_split.each do |i| %>
+      <tr class="<%= cycle("even", "odd") -%>">
+        <td><%= "#{i.name}:" %></td>
+        <td><%= link_to "#{i.count}", :controller => "hosts", :action => "show", :search => {"arch_name_contains" => "#{i.name}"} %></td>
+      </tr>
+    <% end %>
+  </table>
+</p>
+</div>
 
-<h3>Packages installed on this host</h3>
+<div>
+<p>
+  <b>Repositories currently enabled.</b><br />
+  <table>
+    <tr>
+      <th>Name</th>
+      <th>Url</th>
+    </tr>  
+    <% @repos.each do |r| %>
+      <tr class="<%= cycle("even", "odd") -%>">    
+        <td><%= "#{r.repo.name}" %></td>
+        <td><%= "#{r.repo.url}" %></td>
+      </tr>
+    <% end %>
+  </table>
+</p>
+</div>   
+
+<h3>Packages installed on this host.</h3>
 
 <%= link_to 'Edit', edit_host_path(@host) %> |
 <%= link_to 'Back', hosts_path %>
