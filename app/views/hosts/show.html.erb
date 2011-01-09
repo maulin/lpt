@@ -30,7 +30,7 @@
     <% @arch_split.each do |i| %>
       <tr class="<%= cycle("even", "odd") -%>">
         <td><%= "#{i.name}:" %></td>
-        <td><%= link_to "#{i.count}", :controller => "hosts", :action => "show", :search => {"arch_name_contains" => "#{i.name}"} %></td>
+        <td><%= link_to "#{i.count}", :controller => "hosts", :action => "show", :search => {"arch_name_equals" => "#{i.name}"} %></td>
       </tr>
     <% end %>
   </table>
@@ -63,13 +63,12 @@
 <p>
   <%= form_tag host_path(@host), :method => "get" do %>
     Package name
-    <%= text_field :search, :package_name_contains %>
+    <%= text_field :search, :package_name_equals %>
     Version name
-    <%= text_field :search, :version_name_contains %>
+    <%= text_field :search, :version_name_equals %>
     Arch name
-    <%= text_field :search, :arch_name_contains %>        
+    <%= text_field :search, :arch_name_equals %>        
     <%= submit_tag "Search" %><br />
-    All searches will be AND'ed
   <% end %>
 </p>
 
