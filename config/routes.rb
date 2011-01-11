@@ -71,6 +71,8 @@ Lpt::Application.routes.draw do
   end
   
   resources :installations
+  resources :jobs
+    
   root :to => 'hosts#index', :as => '/'
 
   # See how all your routes lay out with "rake routes"

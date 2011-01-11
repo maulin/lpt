@@ -1,0 +1,26 @@
+<h1>Listing jobs</h1>
+
+<div>
+<p>
+  <table class="list">
+    <tr>
+      <th>Uuid</th>
+      <th>Name</th>
+      <th>Status</th>
+      <th>Time</th>
+      <th>Message</th>      
+    </tr>   
+    <% @jobs.each do |j| %>
+      <tr class="<%= cycle("even", "odd") -%>">
+        <td><%= "#{j.uuid}" %></td>
+        <td><%= "#{j.name}" %></td>
+        <td><%= "#{j.status}" %></td>
+        <td><%= "#{j.time}" %></td>
+        <td><%= "#{j.message}" %></td>                        
+      </tr>
+    <% end %>
+  </table>
+</p>
+</div>
+
+
