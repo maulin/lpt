@@ -9,6 +9,17 @@ class JobsController < ApplicationController
       format.xml  { render :xml => @jobs }
     end
   end
+  
+  def clear
+    Resque::Status.clear
+    redirect_to jobs_path
+  end
+  
+  def destroy
+    Resque::Status.kill(params[:id])
+    flash[:notice] = "Job sucessfully killed"
+    redirect_to jobs_path
+  end
 
 
 end

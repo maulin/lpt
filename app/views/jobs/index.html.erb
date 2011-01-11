@@ -1,5 +1,7 @@
 <h1>Listing jobs</h1>
 
+<%= button_to "Clear jobs", {:action => "clear"}, {:method => :put} %>
+
 <div>
 <p>
   <table class="list">
@@ -8,7 +10,8 @@
       <th>Name</th>
       <th>Status</th>
       <th>Time</th>
-      <th>Message</th>      
+      <th>Message</th>
+      <th>Kill<th>      
     </tr>   
     <% @jobs.each do |j| %>
       <tr class="<%= cycle("even", "odd") -%>">
@@ -16,7 +19,12 @@
         <td><%= "#{j.name}" %></td>
         <td><%= "#{j.status}" %></td>
         <td><%= "#{j.time}" %></td>
-        <td><%= "#{j.message}" %></td>                        
+        <td><%= "#{j.message}" %></td>
+        <% unless j.status == "completed" || j.status == "failed" || j.status == "killed" %>
+          <td><%= button_to "Kill", {:action => "destroy", :id => j.uuid}, {:method => :delete} %></td>                       
+        <% else %>
+          <td></td>                                 
+        <% end %>
       </tr>
     <% end %>
   </table>

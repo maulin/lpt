@@ -71,7 +71,11 @@ Lpt::Application.routes.draw do
   end
   
   resources :installations
-  resources :jobs
+  resources :jobs do
+    collection do
+      put 'clear'
+    end
+  end
     
   root :to => 'hosts#index', :as => '/'
 
