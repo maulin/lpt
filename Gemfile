@@ -10,8 +10,6 @@ gem 'resque-status'
 gem 'SystemTimer'
 gem 'meta_search'
 gem 'ipaddress'
-gem 'ruby-debug'
-
 
 # Bundle edge Rails instead:
 # gem 'rails', :git => 'git://github.com/rails/rails.git'
@@ -36,11 +34,12 @@ gem 'ruby-debug'
 # Bundle gems for the local environment. Make sure to
 # put test-only gems in this group so their generators
 # and rake tasks are available in development mode:
-# group :development, :test do
-#   gem 'webrat'
+
+group :development, :test do
   gem 'wirble'
   gem 'hirb'
   gem 'awesome_print'
   gem 'rails-erd'
   gem 'mynyml-redgreen'
-# end
+  gem 'ruby-debug'
+end
