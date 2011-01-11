@@ -12,6 +12,9 @@ class HostsControllerTest < ActionController::TestCase
     get :show, {:id => hosts(:fedora).name}
     assert_response :success
     assert_not_nil assigns(:host)
+    assert assigns(:arch_split)
+    assert assigns(:repos)
+    assert assigns(:host_installations)
     
     get :show, {:id => 12}
     assert_response :missing
