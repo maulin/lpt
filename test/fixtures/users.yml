@@ -1,0 +1,18 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+
+# This model initially had no columns defined.  If you add columns to the
+# model remove the '{}' from the fixture names and add the columns immediately
+# below each fixture, per the syntax in the comments below
+#
+maulin:
+  email: mpathare@gmail.com
+  encrypted_password: $2a$10$QAfOtBAuTZEe057rnkKY1enkwRBFT2DL0E7VPKH4Wky./i8m3IMMq
+  password_salt: $2a$10$QAfOtBAuTZEe057rnkKY1e
+  reset_password_token:
+  remember_token:
+  remember_created_at: 
+  sign_in_count: 3
+  current_sign_in_at: <%= Time.now %>
+  last_sign_in_at: <%= 4.days.ago %>
+  current_sign_in_ip: 127.0.0.1
+  last_sign_in_ip: 127.0.0.1

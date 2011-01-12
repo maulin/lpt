@@ -11,6 +11,7 @@
 <body>
 
   <div id="header">
+    <%= render 'home/topbar' %>
     <div class="title">
       <center>Pipman</center>
     </div>
@@ -19,7 +20,10 @@
   
   <% unless flash[:notice].blank? %>
     <div id="notification"><%= flash[:notice] %></div>
-  <% end %>  
+  <% end %>
+  <% unless flash[:alert].blank? %>
+    <div id="notification"><%= flash[:alert] %></div>
+  <% end %>    
 
   <%= yield %>
 

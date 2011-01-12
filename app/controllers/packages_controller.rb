@@ -1,5 +1,6 @@
 class PackagesController < ApplicationController
-  before_filter :find_by_name
+  before_filter :find_by_name, :authenticate_user!
+
 
   respond_to :html,:json,:yaml
 
@@ -35,7 +36,7 @@ class PackagesController < ApplicationController
     respond_to do |format|
       format.html # show.html.erb
       format.json  { 
-        @search = Installation.select("hosts.name as \"Host\", versions.name as \"Version\", arches.name as \"Arch\" " ).joins\
+        @search = Installation.select("hosts.name as \"Host\", versions.name as \"Version\", arches.name as \"Arch\" ").joins\
         (:version,:host,:package,:arch).where(:package_id => @package.id, :version_id => @package.version_ids)
         @installs = @search.all
         render :json => [@package, @installs]

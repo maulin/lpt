@@ -2,6 +2,10 @@ require 'test_helper'
 
 class PackagesControllerTest < ActionController::TestCase
 
+   def setup
+    sign_in users(:maulin)
+  end
+
   test "index package" do
     get :index
     assert_response :success

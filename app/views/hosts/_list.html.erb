@@ -12,7 +12,7 @@
 
 <div>
   <p>
-  <% form_tag scan_hosts_path, :method => :get, :id => "select" do %>
+  <%= form_tag scan_hosts_path, :method => :get, :id => "select" do %>
     <%= submit_tag "Scan selected hosts" %>
     <table class="list">
       <tr>
