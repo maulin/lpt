@@ -76,10 +76,21 @@ class HostsController < ApplicationController
 
   def scan(*host)
     if host.empty?
-      host = Host.find_by_name(params[:id])
-      ScanHosts.create(:hostname => host.name)
-      flash[:notice] = "#{host.name} is being scanned for packages. Please refresh the page to view them."
-      redirect_to host        
+      if params[:id]
+        host = Host.find_by_name(params[:id]) 
+        ScanHosts.create(:hostname => host.name)
+        flash[:notice] = "#{host.name} is being scanned for packages. Please refresh the page to view them."
+        redirect_to host        
+      elsif params[:host_ids]
+        ids = params[:host_ids]
+        ids.shift if ids[0] == "All"
+        ids.each do |id|
+          host = Host.find(id) 
+          ScanHosts.create(:hostname => host.name)          
+        end
+        flash[:notice] = "#{pluralize(ids.size, 'Host is', 'Hosts are')} being scanned for packages."
+        redirect_to hosts_path        
+      end
     else
       host.each do |h|
         ScanHosts.create(:hostname => h.name)
