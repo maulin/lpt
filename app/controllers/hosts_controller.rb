@@ -46,16 +46,9 @@ class HostsController < ApplicationController
   def update
     @host = Host.find_by_name(params[:id])
 
-    respond_to do |format|
-      if @host.update_attributes(params[:host])
-        format.html { redirect_to(@host,
-                      :notice => 'Host was successfully updated.') }
-        format.xml  { head :ok }
-      else
-        format.html { render :action => "edit" }
-        format.xml  { render :xml => @host.errors,
-                      :status => :unprocessable_entity }
-      end
+    if @host.update_attributes(params[:host])
+      redirect_to @host
+      flash[:notice] = "Host was successfully updated."
     end
   end  
 
