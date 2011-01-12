@@ -12,6 +12,7 @@ class JobsController < ApplicationController
   
   def clear
     Resque::Status.clear
+    flash[:notice] = "All jobs cleared."    
     redirect_to jobs_path
   end
   

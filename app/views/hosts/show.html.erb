@@ -16,7 +16,7 @@
       <td><%= @host.running_kernel %></td>
     </tr>
   </table>  
-  <%= link_to 'Scan Host for Packages', scan_host_path(@host) %>
+  <%= button_to 'Scan host', scan_host_path(@host), {:method => :get} %> <%= button_to 'Edit host', edit_host_path(@host), {:method => :get} %>
 </div>
 
 <div>
@@ -56,9 +56,6 @@
 </div>   
 
 <h3>Packages installed on this host.</h3>
-
-<%= link_to 'Edit', edit_host_path(@host) %> |
-<%= link_to 'Back', hosts_path %>
 
 <p>
   <%= form_tag host_path(@host), :method => "get" do %>
