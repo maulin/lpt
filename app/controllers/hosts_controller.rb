@@ -1,5 +1,5 @@
 class HostsController < ApplicationController
-  before_filter :find_by_name
+  before_filter :find_by_name, :authenticate_user!
 
   include ActionView::Helpers::TextHelper
 

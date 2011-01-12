@@ -1,5 +1,6 @@
 class PackagesController < ApplicationController
-  before_filter :find_by_name
+  before_filter :find_by_name, :authenticate_user!
+
 
   respond_to :html,:json,:yaml
 
