@@ -5,6 +5,10 @@ class HostsControllerTest < ActionController::TestCase
    def setup
     sign_in users(:maulin)
   end
+  
+   def teardown
+    sign_out users(:maulin)
+  end  
 
   test "redirect unless logged in for hosts" do
     sign_out users(:maulin)
