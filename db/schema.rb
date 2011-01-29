@@ -69,7 +69,7 @@ ActiveRecord::Schema.define(:version => 20110128195510) do
     t.string   "url"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "type"
+    t.string   "repo_type"
   end
 
   create_table "sources", :force => true do |t|
