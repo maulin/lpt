@@ -9,7 +9,6 @@ class Repo < ActiveRecord::Base
   def self.import(hostname, import_params)
     host = Host.find_by_name(hostname)
     repos = import_params["yum_repos"].split(/^$/)
-    puts repos
 
     repos.each do |repo|
       rep=repo.split("\n")
@@ -52,5 +51,13 @@ class Repo < ActiveRecord::Base
       
     end # end repos.each
   end # end import method
+  
+  def to_s
+    name
+  end  
+
+  def to_param
+    name
+  end
 
 end
