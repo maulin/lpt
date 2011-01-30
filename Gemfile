@@ -11,6 +11,7 @@ gem 'SystemTimer'
 gem 'meta_search'
 gem 'ipaddress'
 gem 'devise'
+gem 'libxml-ruby'
 
 # Bundle edge Rails instead:
 # gem 'rails', :git => 'git://github.com/rails/rails.git'
