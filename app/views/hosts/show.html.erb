@@ -49,7 +49,7 @@
     <% @repos.each do |r| %>
       <tr class="<%= cycle("even", "odd") -%>">    
         <td><%= "#{r.repo.name}" %></td>
-        <td><%= "#{r.repo.type}" %></td>
+        <td><%= "#{r.repo.repo_type}" %></td>
         <td><%= "#{r.repo.url}" %></td>
       </tr>
     <% end %>
