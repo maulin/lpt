@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110112171944) do
+ActiveRecord::Schema.define(:version => 20110129234709) do
 
   create_table "arches", :force => true do |t|
     t.string   "name"
@@ -69,6 +69,8 @@ ActiveRecord::Schema.define(:version => 20110112171944) do
     t.string   "url"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "repo_type"
+    t.string   "sha"
   end
 
   create_table "sources", :force => true do |t|

@@ -1,0 +1,25 @@
+<h1>Listing Repositories</h1>
+
+<%= form_for @search do |f| %>
+  <%= f.label :name_contains %>
+  <%= f.text_field :name_contains %><br />
+
+  <%= f.submit "Search"%>
+<% end -%><br />
+
+<%= button_to "Scan Repos", scan_repos_path, :method => :get%>
+
+<table class="list">
+  <tr>
+    <th><%= sort_link @search, :name, "Repository Name" %></th>
+    <th>Repository type</th>
+    <th>Url<th>
+  </tr>
+  <% @repo.each do |r| %>
+    <tr class="<%= cycle("even", "odd") -%>">
+      <td><%= link_to r.name, repo_path(r.name) %></td>
+      <td><%= r.repo_type  %></td>
+      <td><%= r.url  %></td>      
+    </tr>
+  <% end %>
+</table>

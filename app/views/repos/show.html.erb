@@ -1,0 +1,24 @@
+<% title @repo %>
+
+<div>
+  <h3><%= "#{@repo}".capitalize %></h3>
+  <%= button_to "Scan Repo", scan_repo_path(@repo), :method => :get%>
+  <table>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>      
+      <th>Url</th>      
+      <th>Enabled</th>
+      <th>Hosts</th>
+    </tr>
+    <% @sources.each do |s| -%>
+      <tr class="<%= cycle("even", "odd") -%>">
+        <td><%= s.name %></td>
+        <td><%= s.repo_type %> </td>
+        <td><%= s.url %> </td>
+        <td><%= s.enabled %> </td>
+        <td><%= s.host_count %> </td>                
+      </tr>
+    <% end -%>
+  </table> 
+</div>
