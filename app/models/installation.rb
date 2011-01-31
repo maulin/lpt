@@ -4,7 +4,7 @@ class Installation < ActiveRecord::Base
   belongs_to :arch
   belongs_to :version
   
-  def self.import(host, import_params)
+  def self.import(host, import_params=nil)
     host_os = Os.find_or_create_by_name(import_params["host_os"])
     #puts host_os
     host_arch = Arch.find_or_create_by_name(import_params["host_arch"])
