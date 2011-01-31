@@ -7,7 +7,7 @@ class ScanHosts < Resque::JobWithStatus
   TIMEOUT=90
   RH_COMMANDS = {}
   RH_COMMANDS["0-hostid"] = "hostid"
-  RH_COMMANDS["1-rpm_md5"] = "rpm -qa --last|md5sum"
+  RH_COMMANDS["1-rpm_md5"] = "rpm -qa |md5sum"
   RH_COMMANDS["2-red_hat_rpm"] = "rpm -qa --qf \"%{name}===%{version}===%{release}===%{arch}===%{INSTALLTIME:date}==SPLIT==\""
   RH_COMMANDS["3-host_arch_kernel"] = "uname -mr"
   RH_COMMANDS["4-red_hat_os"] = "test -f /etc/redhat-release && cat /etc/redhat-release"
@@ -54,17 +54,25 @@ class ScanHosts < Resque::JobWithStatus
     begin
       Net::SSH.start(hostname, @@user, :password => @@password, :timeout => TIMEOUT) do |ssh|
       
-        at(1,3,"Running commands...")  
+        at(1,4,"Running commands...")  
         import_params["hostid"] = exec_command(ssh, CMD_NAMES[0], RH_COMMANDS["0-hostid"])
         import_params["rpm_md5"] = exec_command(ssh, CMD_NAMES[1], RH_COMMANDS["1-rpm_md5"]).split[0]
-        import_params["pkgs"] = exec_command(ssh, CMD_NAMES[2], RH_COMMANDS["2-red_hat_rpm"])
+
+        # If packages have not changed, do not do anything
+        skip_pkgs = "no"
+        if (Host.check_rpm_status(hostname, import_params["rpm_md5"]) == 1)
+          at(2, 4, "Skipping packages as nothing has changed")
+          skip_pkgs = "yes"
+        end
+        import_params["pkgs"] = exec_command(ssh, CMD_NAMES[2], RH_COMMANDS["2-red_hat_rpm"]) if skip_pkgs == "no"
+
         import_params["running_kernel"], import_params["host_arch"] = exec_command(ssh, CMD_NAMES[3], RH_COMMANDS["3-host_arch_kernel"]).split
         import_params["host_os"] = exec_command(ssh, CMD_NAMES[4], RH_COMMANDS["4-red_hat_os"])
         import_params["yum_repos"] = exec_command(ssh, CMD_NAMES[5], RH_COMMANDS["5-yum_repo_list"])
         
-        at(2, 3, "Importing installations...")
-        Installation.import(hostname, import_params)
-        at(3, 3, "Importing repos...")
+        at(2, 4, "Importing installations and host info...")
+        Installation.import(hostname, import_params, skip_pkgs)
+        at(3, 4, "Importing repos...")
         Repo.import(hostname, import_params)
 
         completed("Finished scanning #{hostname}.")
