@@ -67,6 +67,7 @@ class ScanHosts < Resque::JobWithStatus
         Repo.import(hostname, import_params)
 
         completed("Finished scanning #{hostname}.")
+        Resque.redis[hostname] = ""
       end
     rescue Net::SSH::Exception
       failed("ScanHosts: Fatal: Could not ssh as #{@@user} to #{hostname}.")
