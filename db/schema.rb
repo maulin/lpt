@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110131015938) do
+ActiveRecord::Schema.define(:version => 20110131062813) do
 
   create_table "arches", :force => true do |t|
     t.string   "name"
@@ -27,6 +27,7 @@ ActiveRecord::Schema.define(:version => 20110131015938) do
     t.integer  "arch_id"
     t.string   "hostid"
     t.string   "rpm_md5"
+    t.integer  "failed_scans"
   end
 
   add_index "hosts", ["name"], :name => "index_hosts_on_name"

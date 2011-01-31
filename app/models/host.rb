@@ -31,4 +31,9 @@ class Host < ActiveRecord::Base
       return 0
     end
   end #end check_rpm_status
+
+  def self.failed_scans(hostname)
+    host = Host.find_by_name(hostname)
+    host.increment!(:failed_scans)
+  end
 end

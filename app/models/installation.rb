@@ -14,7 +14,8 @@ class Installation < ActiveRecord::Base
     host.update_attributes(:running_kernel => import_params["running_kernel"].chomp.strip,
                             :hostid => import_params["hostid"].strip.chomp,
                             :arch_id => host_arch.id,
-                            :os_id => host_os.id)
+                            :os_id => host_os.id,
+                            :failed_scans => 0)
     if skip_pkgs == "no"
       import_params["pkgs"] = import_params["pkgs"].split("==SPLIT==")
       prev_installed = Installation.select("package_id, version_id, arch_id").where(:host_id => host.id).all.collect{|i| i.package_id.to_s+'==='+i.version_id.to_s+'==='+i.arch_id.to_s}
