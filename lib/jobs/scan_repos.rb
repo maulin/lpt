@@ -8,7 +8,7 @@ class ScanRepos < Resque::JobWithStatus
 
   def perform
     at(1,4,"Starting perform...")
-    unique = "#{RAILS_ROOT}/tmp/#{Time.now.to_i}."
+    unique = "#{RAILS_ROOT}/tmp/yum_repos/#{Time.now.to_i}."
     metalink = open(unique + "metalink.xml", "w+")
     repomd = open(unique + "repomd.xml", "w+")
     primary = open(unique + "primary.xml", "w+")

@@ -16,7 +16,7 @@
       <td><%= @host.running_kernel %></td>
     </tr>
   </table>  
-  <%= button_to 'Scan host', scan_host_path(@host), {:method => :get} %> <%= button_to 'Edit host', edit_host_path(@host), {:method => :get} %>
+  <%= link_to 'Scan host', scan_host_path(@host), {:method => :get} %> <%= button_to 'Edit host', edit_host_path(@host), {:method => :get} %>
 </div>
 
 <div>
