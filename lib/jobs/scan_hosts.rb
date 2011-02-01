@@ -41,7 +41,7 @@ class ScanHosts < Resque::JobWithStatus
     import_params = {}
     hostname = options['hostname']
     
-    if !Resque.redis[hostname].empty?
+    if (!Resque.redis[hostname].nil?) 
       Rails.logger.info "ScanHosts: Scan already in progress for #{hostname}"
       completed("Scan already in progress for #{hostname}.")
       exit 0
@@ -97,7 +97,7 @@ class ScanHosts < Resque::JobWithStatus
 
   def job_failed(host, err_code)
       failed("ScanHosts: Fatal: Could not ssh as #{@@user} to #{host.name}: #{err_code} ")
-      Resque.redis[host.name] = ""
+      Resque.redis[host.name] = nil
       host.increment_failed_scans
       exit 1
   end
