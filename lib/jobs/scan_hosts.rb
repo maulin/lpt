@@ -49,6 +49,7 @@ class ScanHosts < Resque::JobWithStatus
       Resque.redis[hostname] = "Scanning"
     end
 
+    host=Host.find_by_name(hostname)
     Rails.logger.info "ScanHosts: Starting perform for ScanHosts(#{hostname})"
     begin
       Net::SSH.start(hostname, @@user, :password => @@password, :timeout => TIMEOUT) do |ssh|
@@ -57,7 +58,6 @@ class ScanHosts < Resque::JobWithStatus
         import_params["hostid"] = exec_command(ssh, CMD_NAMES[0], RH_COMMANDS["0-hostid"],hostname)
         import_params["rpm_md5"] = exec_command(ssh, CMD_NAMES[1], RH_COMMANDS["1-rpm_md5"],hostname).split[0]
 
-        host=Host.find_by_name(hostname)
         # If packages have not changed, do not do anything
         skip_pkgs = "no"
         if (host.get_rpm_qa_md5(import_params["rpm_md5"]) == 1)
