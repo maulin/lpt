@@ -8,11 +8,11 @@ class ScanRepos < Resque::JobWithStatus
 
   def perform
     at(1,4,"Starting perform...")
-    unique = "#{RAILS_ROOT}/lib/#{Time.now.to_i}."
+    unique = "#{RAILS_ROOT}/tmp/#{Time.now.to_i}."
     metalink = open(unique + "metalink.xml", "w+")
     repomd = open(unique + "repomd.xml", "w+")
     primary = open(unique + "primary.xml", "w+")
-#    primary = open("#{RAILS_ROOT}/lib/primary.xml", "r")
+#    primary = open("#{RAILS_ROOT}/tmp/primary.xml", "r")
     repomd_url = ""
     url = options["url"]
     repo = Repo.find_by_url(url)
@@ -29,7 +29,7 @@ class ScanRepos < Resque::JobWithStatus
       #TODO      
     end
     File.delete(metalink.path, repomd.path) 
-    completed "Finished scanning #{repo.name}"
+    completed("Finished scanning #{repo.name}")
   end#end perform
   
   def get_mirrors(repo, metalink, repomd, repomd_url)
