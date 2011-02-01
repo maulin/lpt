@@ -1,4 +1,4 @@
-<% title @host.name %>
+<%= title @host.name %>
 
 <div>
   <h3>Host Information.</h3>
@@ -48,9 +48,9 @@
     </tr>  
     <% @repos.each do |r| %>
       <tr class="<%= cycle("even", "odd") -%>">    
-        <td><%= "#{r.repo.name}" %></td>
+        <td><%= link_to("#{r.repo.name}", :controller => "repos", :action => "show", :id => r.repo.name) %></td>
         <td><%= "#{r.repo.repo_type}" %></td>
-        <td><%= "#{r.repo.url}" %></td>
+        <td><%= url_for("#{r.repo.url}") %></td>
       </tr>
     <% end %>
   </table>
