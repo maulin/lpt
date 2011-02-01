@@ -41,14 +41,16 @@ class ScanHosts < Resque::JobWithStatus
     import_params = {}
     hostname = options['hostname']
 
-    if (PipmanHostScan.return_scan_status(hostname))
+    #if (PipmanHostScan.return_scan_status(hostname))
+    if (Resque.redis.get(hostname))
       Rails.logger.info "ScanHosts: Scan already in progress for #{hostname}"
       completed("Scan already in progress for #{hostname}.")
     else
       Rails.logger.info "ScanHosts: Starting perform for ScanHosts(#{hostname})"
       begin
         host=Host.find_by_name!(hostname)
-        PipmanHostScan.add_scan_status(hostname)
+        #PipmanHostScan.add_scan_status(hostname)
+        Resque.redis.set(hostname,"Scanning")
         Net::SSH.start(hostname, @@user, :password => @@password, :timeout => TIMEOUT) do |ssh|
         
           at(1,4,"Running commands...")  
@@ -74,7 +76,8 @@ class ScanHosts < Resque::JobWithStatus
           Repo.import(hostname, import_params)
 
           host.set_rpm_qa_md5(import_params["rpm_md5"])
-          PipmanHostScan.reset_scan_status(hostname)
+          Resque.redis.del(hostname)
+          #PipmanHostScan.reset_scan_status(hostname)
           completed("Finished scanning #{hostname}. With skip_pkgs=#{skip_pkgs}")
         end
       rescue Errno::ETIMEDOUT
@@ -97,7 +100,8 @@ class ScanHosts < Resque::JobWithStatus
 
   def job_failed(host, err_code)
       failed("ScanHosts: Fatal: Could not ssh as #{@@user} to #{host}: #{err_code} ")
-      PipmanHostScan.reset_scan_status(host)
+      Resque.redis.del(hostname)
+      #PipmanHostScan.reset_scan_status(host)
       #Resque.redis[host.name] = nil
       host.increment_failed_scans if !host.nil?
       exit 1
