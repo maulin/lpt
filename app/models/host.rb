@@ -22,18 +22,19 @@ class Host < ActiveRecord::Base
     name
   end
 
-  def self.check_rpm_status(hostname, rpm_md5)
-    host = Host.find_by_name(hostname)
-    if host.rpm_md5 == rpm_md5.strip.chomp
+  def get_rpm_qa_md5(rpm_md5)
+    if self.rpm_md5 == rpm_md5.strip.chomp
       return 1
     else
-      host.update_attributes(:rpm_md5 => rpm_md5.strip.chomp)
       return 0
     end
   end #end check_rpm_status
 
-  def self.failed_scans(hostname)
-    host = Host.find_by_name(hostname)
-    host.increment!(:failed_scans)
+  def set_rpm_qa_md5(rpm_md5)
+      self.update_attributes(:rpm_md5 => rpm_md5.strip.chomp)
+  end #end check_rpm_status
+
+  def increment_failed_scans()
+    self.increment!(:failed_scans)
   end
 end

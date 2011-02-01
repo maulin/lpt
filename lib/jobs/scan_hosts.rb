@@ -57,9 +57,10 @@ class ScanHosts < Resque::JobWithStatus
         import_params["hostid"] = exec_command(ssh, CMD_NAMES[0], RH_COMMANDS["0-hostid"],hostname)
         import_params["rpm_md5"] = exec_command(ssh, CMD_NAMES[1], RH_COMMANDS["1-rpm_md5"],hostname).split[0]
 
+        host=Host.find_by_name(hostname)
         # If packages have not changed, do not do anything
         skip_pkgs = "no"
-        if (Host.check_rpm_status(hostname, import_params["rpm_md5"]) == 1)
+        if (host.get_rpm_qa_md5(import_params["rpm_md5"]) == 1)
           at(2, 4, "Skipping packages as nothing has changed")
           skip_pkgs = "yes"
         end
@@ -71,31 +72,33 @@ class ScanHosts < Resque::JobWithStatus
         
         at(2, 4, "Importing installations and host info...")
         Installation.import(hostname, import_params, skip_pkgs)
+        
         at(3, 4, "Importing repos...")
         Repo.import(hostname, import_params)
 
-        completed("Finished scanning #{hostname}. With skip_pkgs=#{skip_pkgs}")
+        host.set_rpm_qa_md5(import_params["rpm_md5"])
         Resque.redis[hostname] = ""
+        completed("Finished scanning #{hostname}. With skip_pkgs=#{skip_pkgs}")
       end
     rescue Errno::ETIMEDOUT
-      job_failed(hostname,"ETIMEDOUT")
+      job_failed(host,"ETIMEDOUT")
     rescue Errno::EHOSTUNREACH
-      job_failed(hostname,"EHOSTUNREACH")
+      job_failed(host,"EHOSTUNREACH")
     rescue Errno::ECONNREFUSED
-      job_failed(hostname,"ECONREFUSED")
+      job_failed(host,"ECONREFUSED")
     rescue Errno::ENETUNREACH
-      job_failed(hostname,"ENETUNREACH")
+      job_failed(host,"ENETUNREACH")
     rescue Errno::ECONNRESET
-      job_failed(hostname,"ECONNRESET")
+      job_failed(host,"ECONNRESET")
     rescue Net::SSH::Exception
-      job_failed(hostname,"SSH EXCEPTION")
+      job_failed(host,"SSH EXCEPTION")
     end #end ssh begin
   end #end perform
 
-  def job_failed(hostname, err_code)
-      failed("ScanHosts: Fatal: Could not ssh as #{@@user} to #{hostname}: #{err_code} ")
-      Resque.redis[hostname] = ""
-      Host.failed_scans(hostname)
+  def job_failed(host, err_code)
+      failed("ScanHosts: Fatal: Could not ssh as #{@@user} to #{host.name}: #{err_code} ")
+      Resque.redis[host.name] = ""
+      host.increment_failed_scans
       exit 1
   end
 end #end ScanHosts
