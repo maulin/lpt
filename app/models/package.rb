@@ -13,7 +13,7 @@ class Package < ActiveRecord::Base
   search_methods :pkg_hosts
   
   scope :pkg_hosts, Package.select('packages.id, name, count(host_id) as host_count').joins( \
-                   ',(select distinct package_id, host_id from installations)as x').where( \
+                   ',(select distinct package_id, host_id from installations where currently_installed = 1)as x').where( \
                    'x.package_id = id').group('name, package_id')
 
   def to_s
