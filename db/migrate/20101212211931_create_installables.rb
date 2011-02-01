@@ -5,7 +5,7 @@ class CreateInstallables < ActiveRecord::Migration
       t.integer :package_id
       t.integer :version_id
       t.integer :arch_id
-      t.string :latest_ind
+      t.boolean :latest_ind
 
       t.timestamps
     end

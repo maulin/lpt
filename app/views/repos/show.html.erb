@@ -22,3 +22,35 @@
     <% end -%>
   </table> 
 </div>
+
+<h3>Packages installed on this host.</h3>
+<p>
+  <%= form_tag repo_path(@repo), :method => "get" do %>
+    Package name
+    <%= text_field :search, :package_name_equals %>
+    Version name
+    <%= text_field :search, :version_name_equals %>
+    Arch name
+    <%= text_field :search, :arch_name_equals %>        
+    <%= submit_tag "Search" %><br />
+  <% end %>
+</p>
+
+<p>
+  <table class="list">
+    <tr>
+      <th><%= sort_link @search, :package_name, "Package", :class => "package" %></th>
+      <th><%= sort_link @search, :version_name, "Version", :class => "version" %></th>
+      <th><%= sort_link @search, :arch_name, "Arch", :class => "arch" %></th>
+     </tr>
+
+    <% @repo_installables.each do |i| -%>
+      <tr class="<%= cycle("even", "odd") -%>">
+        <td><%= i.package %></td>
+        <td><%= i.version %></td>
+        <td><%= i.arch %></td>
+      </tr>
+    <% end -%>
+
+  </table>
+</p>

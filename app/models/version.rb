@@ -2,6 +2,8 @@ class Version < ActiveRecord::Base
 
   has_many :installations, :dependent => :destroy
   has_many :packages, :through => :installations
+  has_many :installables
+  has_many :packages, :through => :installables  
   has_many :hosts, :through => :installations, :uniq => true
 
   validates_uniqueness_of :name
