@@ -11,13 +11,26 @@ class JobsController < ApplicationController
       format.xml  { render :xml => @jobs }
     end
   end
-  
+
   def clear
     Resque::Status.clear
-    flash[:notice] = "All jobs cleared."    
+    flash[:notice] = "All jobs cleared."
+    redirect_to jobs_path
+  end
+
+  def reset_all
+    Resque.redis.flushdb
+    flash[:notice] = "All jobs/queues/statuses reset."
     redirect_to jobs_path
   end
   
+  #def reset_status
+  #  hostname = ????
+  #  Resque.redis.del(hostname)
+  #  flash[:notice] = "Host #{hostnam} reset"
+  #  redirect_to jobs_path
+  #end
+
   def destroy
     Resque::Status.kill(params[:id])
     flash[:notice] = "Job sucessfully killed"
