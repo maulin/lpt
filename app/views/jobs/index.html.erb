@@ -2,6 +2,7 @@
 <h1>Listing jobs</h1>
 
 <%= button_to "Clear jobs", {:action => "clear"}, {:method => :put} %>
+<%= button_to "Reset jobs queues and statuses.", {:action => "reset_all"}, {:method => :post} %>
 
 <div>
 <p>
@@ -12,7 +13,7 @@
       <th>Status</th>
       <th>Time</th>
       <th>Message</th>
-      <th>Kill<th>      
+      <th>Kill<th>
     </tr>   
     <% @jobs.each do |j| %>
       <tr class="<%= cycle("even", "odd") -%>">

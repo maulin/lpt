@@ -25,10 +25,13 @@ Lpt::Application.routes.draw do
   end
   
   resources :installations
+
   resources :jobs do
     collection do
       put 'clear'
+      post 'reset_all'
     end
+    #post 'reset_status', :on=> :member
   end
   
   resources :repos do

@@ -77,33 +77,16 @@ class ScanHosts < Resque::JobWithStatus
 
           host.set_rpm_qa_md5(import_params["rpm_md5"])
           Resque.redis.del(hostname)
-          #PipmanHostScan.reset_scan_status(hostname)
           completed("Finished scanning #{hostname}. With skip_pkgs=#{skip_pkgs}")
         end
-      rescue Errno::ETIMEDOUT
-        job_failed(host,"ETIMEDOUT")
-      rescue Errno::EHOSTUNREACH
-        job_failed(host,"EHOSTUNREACH")
-      rescue Errno::ECONNREFUSED
-        job_failed(host,"ECONREFUSED")
-      rescue Errno::ENETUNREACH
-        job_failed(host,"ENETUNREACH")
-      rescue Errno::ECONNRESET
-        job_failed(host,"ECONNRESET")
-      rescue Net::SSH::Exception
-        job_failed(host,"SSH EXCEPTION")
-      rescue ActiveRecord::RecordNotFound
-        job_failed(host,"Host #{hostname} not found!")
+      rescue Exception => e
+        failed("FAILED to run command on #{hostname} as user=#{@@user} because of: #{e}")
+        host.increment_failed_scans if !host.nil?
+        exit 1
+      ensure
+        Resque.redis.del(hostname)
       end #end begin ssh
-    end # end if (PipmanHostScan.return_scan_status(hostname))  
+    end # end if (Resque.redis.get(hostname))
   end #end perform
 
-  def job_failed(host, err_code)
-      failed("ScanHosts: Fatal: Could not ssh as #{@@user} to #{host}: #{err_code} ")
-      Resque.redis.del(hostname)
-      #PipmanHostScan.reset_scan_status(host)
-      #Resque.redis[host.name] = nil
-      host.increment_failed_scans if !host.nil?
-      exit 1
-  end
 end #end ScanHosts
