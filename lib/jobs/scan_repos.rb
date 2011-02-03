@@ -8,18 +8,17 @@ class ScanRepos < Resque::JobWithStatus
 
   def perform
     at(1,4,"Starting perform...")
-    unique = "#{RAILS_ROOT}/tmp/yum_repos/#{Time.now.to_i}."
-    metalink = open(unique + "metalink.xml", "w+")
-    repomd = open(unique + "repomd.xml", "w+")
-    primary = open(unique + "primary.xml", "w+")
-#    primary = open("#{RAILS_ROOT}/tmp/primary.xml", "r")
+    metalink = Tempfile.new("metalink.xml", "#{Rails.root.to_s}/tmp")
+    repomd = Tempfile.new("repomd.xml", "#{Rails.root.to_s}/tmp")
+    primary = Tempfile.new("primary.xml", "#{Rails.root.to_s}/tmp")
     repomd_url = ""
+    primary_sha = ""
     url = options["url"]
     repo = Repo.find_by_url(url)
     
     if repo.repo_type == "Repo-metalink"
       get_mirrors(repo, metalink, repomd, repomd_url)
-      process_repomd(repo, repomd, repomd_url, primary)
+      process_repomd(repo, repomd, repomd_url, primary, primary_sha)
       at(4,4, "Starting import...")
       Installable.import(repo, primary)
       at(4,4, "Finished import...")      
@@ -28,7 +27,9 @@ class ScanRepos < Resque::JobWithStatus
     elsif repo.repo_type == "Repo-mirrors"
       #TODO      
     end
-    File.delete(metalink.path, repomd.path) 
+    metalink.close; repomd.close; primary.close
+    repo.sha = primary_sha
+    repo.save
     completed("Finished scanning #{repo.name}")
   end#end perform
   
@@ -62,7 +63,7 @@ class ScanRepos < Resque::JobWithStatus
     
   end#end get_mirrors
   
-  def process_repomd(repo, repomd, repomd_url, primary)
+  def process_repomd(repo, repomd, repomd_url, primary, primary_sha)
     at(3,4,"Processing repomd...")
     if File.zero?(repomd.path)
       failed("Repomd file is empty...Exiting.")
@@ -73,13 +74,12 @@ class ScanRepos < Resque::JobWithStatus
         if r.name == "data"
           r.move_to_attribute("type")
           if r.value == "primary"
-            checksum = ""
             location = ""
             r.move_to_element
             info = XML::Reader.string("<data>" + r.read_inner_xml + "</data>")
             while info.read do
               if info.name == "checksum"
-                checksum = info.read_string
+                 primary_sha.replace info.read_string
                 info.next
               end
               if info.name == "location"
@@ -93,12 +93,13 @@ class ScanRepos < Resque::JobWithStatus
         end#End if data
       end#End while
           
-      if location.empty? || checksum.empty?
+      if location.empty? || primary_sha.empty?
         failed("Could not find location or checksum of primary package list")
         exit 1
       else
-        if repo.sha == checksum
+        if repo.sha == primary_sha
           completed("#{repo}: Checksums match, no change since last scan.")
+          exit 0
         else
           package_list_url = repomd_url.gsub(/repodata.*/, location)
           begin

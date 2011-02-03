@@ -8,47 +8,43 @@ class Installable < ActiveRecord::Base
   
   def self.import(repo, primary)
     p = XML::Reader.file(primary.path)
+    count = 0
+    pkg_count = 0
+    new_pkg_count = 0
     while p.read do
       if p.name == "package"
-        pkg, a, v, r = ""
-        details = XML::Reader.string("<package>" + p.read_inner_xml + "</package>")
-        next if p.node_type == 15 #end element
-        while details.read do
-          if details.name == "name"
-            pkg = details.read_string.chomp.strip
-            details.next
-          end
-          if details.name == "arch"
-            a = details.read_string.chomp.strip
-            details.next
-          end      
-          if details.name == "version" 
-            details.move_to_attribute("ver")
-            v = details.value.chomp.strip
-            details.move_to_attribute("rel")
-            r = details.value.chomp.strip
-          end
-        end#end while details
-        package = Package.find_or_create_by_name(pkg)
-        version = Version.find_or_create_by_name(v + "-" + r)
-        arch = Arch.find_or_create_by_name(a)
-        
-        unless i = Installable.where(:repo_id => repo.id,
-                                     :package_id => package.id,
-                                     :arch_id => arch.id,
-                                     :version_id => version.id).first
-          
-          Installable.create(:repo_id => repo.id,
-                            :package_id => package.id,
-                            :arch_id => arch.id,
-                            :version_id => version.id)
-        end#end unless
-        
+        count += 1
+        next
+      end
+      if count.odd?
+        if p.name == "name" and p.node_type != 15
+          pkg = p.read_string.chomp.strip
+          package = Package.find_or_create_by_name(pkg)
+        end
+        if p.name == "arch" and p.node_type != 15
+          a = p.read_string.chomp.strip
+          arch = Arch.find_or_create_by_name(a)          
+        end      
+        if p.name == "version" 
+          p.move_to_attribute("ver")
+          v = p.value.chomp.strip
+          p.move_to_attribute("rel")
+          r = p.value.chomp.strip
+          version = Version.find_or_create_by_name(v + "-" + r)          
+        end
+      elsif count > 1 and count.even?
         puts "#{pkg} - #{v}-#{r} - #{a}"
-      end# end if package
-
+        pkg_count += 1
+        unless i = Installable.where(:repo_id => repo.id, :package_id => package.id,
+                                     :arch_id => arch.id, :version_id => version.id).first
+          new_pkg_count += 1
+          Installable.create(:repo_id => repo.id, :package_id => package.id,
+                            :arch_id => arch.id, :version_id => version.id)
+        end#end unless
+      end#end if count
+        
     end#end while p
-    
+    puts "Total = #{pkg_count} - Installed = #{new_pkg_count}"
   end#end import
   
 end#end class
