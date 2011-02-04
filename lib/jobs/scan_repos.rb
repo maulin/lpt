@@ -40,8 +40,8 @@ class ScanRepos < Resque::JobWithStatus
     metalink = Tempfile.new("metalink.xml", "#{Rails.root.to_s}/tmp")
     begin
       metalink.write(open(repo.url).read)
-    rescue
-      failed("Could not get mirror list from #{repo.name} - #{repo.url}")
+    rescue Exception => e
+      failed("Could not get mirror list from #{repo.name} - #{repo.url} because of #{e}")
       exit 1
     end
     metalink    
@@ -54,8 +54,8 @@ class ScanRepos < Resque::JobWithStatus
     repomd["url"] = ""
     begin
       m = XML::Reader.file(metalink.path)
-    rescue
-      failed("XML parse error - metalink file")
+    rescue Exception => e
+      failed("XML parse error - metalink file because of #{e}")
       exit 1
     end
     while m.read do
@@ -63,8 +63,8 @@ class ScanRepos < Resque::JobWithStatus
         repomd["url"] = m.read_string
         begin
           repomd["file"].write(open(repomd["url"]).read)
-        rescue
-          at(3,6,"Error getting repomd file from #{repomd["url"]}")
+        rescue Exception => e
+          at(3,6,"Error = #{e}")
           at(3,6,"Trying the next mirror...")
           m.next    
         else
@@ -87,8 +87,8 @@ class ScanRepos < Resque::JobWithStatus
     primary_attrs = {}
     begin
       r = XML::Reader.file(repomd.path)
-    rescue
-      failed("XML parse error - repomd file")
+    rescue Exception => e
+      failed("XML parse error - repomd file because of #{e}")
       exit 1
     end
     while r.read do
@@ -122,8 +122,8 @@ class ScanRepos < Resque::JobWithStatus
         primary.write(Zlib::GzipReader.new(remote_file).read)
       end
       primary.close
-    rescue
-      failed("Could not get primary.xml.gz")
+    rescue Exception => e
+      failed("Could not get primary.xml.gz because of #{e}")
       exit 1
     end    
     primary
