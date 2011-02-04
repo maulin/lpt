@@ -7,141 +7,127 @@ require 'resque/job_with_status'
 class ScanRepos < Resque::JobWithStatus
 
   def perform
-    at(1,4,"Starting perform...")
-    metalink = Tempfile.new("metalink.xml", "#{Rails.root.to_s}/tmp")
-    repomd = Tempfile.new("repomd.xml", "#{Rails.root.to_s}/tmp")
-    primary = Tempfile.new("primary.xml", "#{Rails.root.to_s}/tmp")
-    repomd_url = ""
-    primary_sha = ""
+    at(1,6,"Starting perform...")
     url = options["url"]
-    repo = Repo.find_by_url(url)
-    
+    repo = Repo.find_by_url(url)    
     if repo.repo_type == "Repo-metalink"
-      get_mirrors(repo, metalink, repomd, repomd_url)
-      process_repomd(repo, repomd, repomd_url, primary, primary_sha)
-      at(4,4, "Starting import...")
-      Installable.import(repo, primary)
-      at(4,4, "Finished import...")      
+      metalink = get_metalink_file(repo)
+      repomd = get_repomd_data(metalink)
+      primary_attrs = get_primary_attrs(repomd["file"])
+      if primary_attrs["sha"] == repo.sha
+        completed("Checksum match, nothing has changed since the last scan.")
+        exit 0
+      else
+        primary = get_primary(repomd["url"], primary_attrs["location"])
+        at(6,6,"Starting import...")
+        Installable.import(repo, primary)
+        metalink.delete; repomd["file"].delete; primary.delete
+        repo.sha = primary_attrs["sha"]
+        repo.save
+        completed("Finished scanning #{repo.name}")
+        exit 0
+      end
     elsif repo.repo_type == "Repo-baseurl"
       #TODO
     elsif repo.repo_type == "Repo-mirrors"
       #TODO      
     end
-    metalink.close; repomd.close; primary.close
-    repo.sha = primary_sha
-    repo.save
-    completed("Finished scanning #{repo.name}")
   end#end perform
   
-  def get_mirrors(repo, metalink, repomd, repomd_url)
-    at(2,4,"Getting mirrors...")
+  #returns the metalink from from the repos url
+  def get_metalink_file(repo)
+    at(2,6,"Getting metalink file...")
+    metalink = Tempfile.new("metalink.xml", "#{Rails.root.to_s}/tmp")
     begin
       metalink.write(open(repo.url).read)
-      metalink.close
     rescue
       failed("Could not get mirror list from #{repo.name} - #{repo.url}")
       exit 1
-    end    
-    
-    m = XML::Reader.file(metalink.path)
+    end
+    metalink    
+  end#end get_metalink_file
+  
+  #returns a hash containing the temporary repomd file and the url of the files location
+  def get_repomd_data(metalink)
+    at(3,6,"getting repomd file...")
+    repomd = { "file" => Tempfile.new( "repomd.xml", "#{Rails.root.to_s}/tmp" ) }
+    repomd["url"] = ""
+    begin
+      m = XML::Reader.file(metalink.path)
+    rescue
+      failed("XML parse error - metalink file")
+      exit 1
+    end
     while m.read do
       if m.name == "url"
-        repomd_url.replace  m.read_string
+        repomd["url"] = m.read_string
         begin
-          repomd.write(open(repomd_url).read)
-          repomd.close
+          repomd["file"].write(open(repomd["url"]).read)
         rescue
-          at(2,4,"Error getting repomd file from #{repomd_url}")
-          at(2,4,"Trying the next mirror...")
-          r.next    
+          at(3,6,"Error getting repomd file from #{repomd["url"]}")
+          at(3,6,"Trying the next mirror...")
+          m.next    
         else
-          at(2,4,"Using repomd file from #{repomd_url}")
+          at(3,6,"Using repomd file from #{repomd["url"]}")
           break
         end
       end
     end#End while
-    
-  end#end get_mirrors
-  
-  def process_repomd(repo, repomd, repomd_url, primary, primary_sha)
-    at(3,4,"Processing repomd...")
-    if File.zero?(repomd.path)
-      failed("Repomd file is empty...Exiting.")
-      exit 1
+    unless File.size(repomd["file"].path) == 0
+      repomd
     else
+      failed("Repomd file is empty.")
+      exit 1    
+    end
+  end#end get_repomd_file
+  
+  #returs a hash with the sha and location of the primary packages file
+  def get_primary_attrs(repomd)
+    at(4,6,"getting primary attributes...")
+    primary_attrs = {}
+    begin
       r = XML::Reader.file(repomd.path)
-      while r.read do
-        if r.name == "data"
-          r.move_to_attribute("type")
-          if r.value == "primary"
-            location = ""
-            r.move_to_element
-            info = XML::Reader.string("<data>" + r.read_inner_xml + "</data>")
-            while info.read do
-              if info.name == "checksum"
-                 primary_sha.replace info.read_string
-                info.next
-              end
-              if info.name == "location"
-                info.move_to_attribute("href")
-                location = info.value
-              end
+    rescue
+      failed("XML parse error - repomd file")
+      exit 1
+    end
+    while r.read do
+      if r.name == "data" and r.node_type != 15
+        r.move_to_attribute("type")
+        if r.value == "primary"
+          attrs = XML::Reader.string(r.read_outer_xml)
+          while attrs.read do
+            if attrs.name == "checksum" and attrs.node_type != 15
+              primary_attrs["sha"] = attrs.read_string
             end
-            break
-          end#end if primary
-          
-        end#End if data
-      end#End while
-          
-      if location.empty? || primary_sha.empty?
-        failed("Could not find location or checksum of primary package list")
-        exit 1
-      else
-        if repo.sha == primary_sha
-          completed("#{repo}: Checksums match, no change since last scan.")
-          exit 0
-        else
-          package_list_url = repomd_url.gsub(/repodata.*/, location)
-          begin
-            open(package_list_url) do |remote_file|
-              primary.write(Zlib::GzipReader.new(remote_file).read)
+            if attrs.name == "location"
+              attrs.move_to_attribute("href")
+              primary_attrs["location"] = attrs.value
             end
-            primary.close
-          rescue
-            failed("Could not get primary.xml.gz")
-            exit 1
-          end
+          end#end while attrs
+          break
         end
+      end#end if data      
+    end#end while
+    primary_attrs
+  end#end get_primary_attrs
+  
+  #returns the primary xml file
+  def get_primary(url, location)
+    at(5,6,"getting primary xml file...")
+    primary = Tempfile.new("primary.xml", "#{Rails.root.to_s}/tmp")
+    package_list_url = url.gsub(/repodata.*/, location)
+    begin
+      open(package_list_url) do |remote_file|
+        primary.write(Zlib::GzipReader.new(remote_file).read)
       end
-    end#if size zero
-
-  end#end process_repomd
+      primary.close
+    rescue
+      failed("Could not get primary.xml.gz")
+      exit 1
+    end    
+    primary
+  end#end get_primary
   
 end#end class
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
